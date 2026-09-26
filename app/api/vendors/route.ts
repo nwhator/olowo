@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getVendors, getVendorById, updateVendor, recordAuditEvent } from '@/lib/db/storage';
+import { getVendors, getVendorById, updateVendor, createVendor, recordAuditEvent } from '@/lib/db/storage';
 
 export async function GET() {
   try {
@@ -13,6 +13,39 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+
+    // Create New Vendor
+    if (body.action === 'create' || body.name) {
+      const { name, category, walletAddress, approved } = body;
+      if (!name || !walletAddress) {
+        return NextResponse.json({ error: 'Vendor name and wallet address are required' }, { status: 400 });
+      }
+
+      const newVendor = createVendor({
+        businessId: 'biz_africode_99210',
+        name,
+        category: category || 'Contractor',
+        walletAddress,
+        approved: approved !== undefined ? approved : true,
+        riskStatus: 'NORMAL',
+        totalPaid: 0,
+      });
+
+      recordAuditEvent({
+        action: 'MANDATE_UPDATED',
+        entity: newVendor.name,
+        entityType: 'VENDOR',
+        entityId: newVendor.id,
+        decision: newVendor.approved ? 'ALLOWED' : 'APPROVAL_REQUIRED',
+        reason: `New counterparty ${newVendor.name} onboarded with wallet ${walletAddress.slice(0, 8)}... (${newVendor.approved ? 'Approved' : 'Pending'}).`,
+        policyChecks: [],
+        authorization: 'HUMAN_APPROVED',
+      });
+
+      return NextResponse.json({ success: true, vendor: newVendor });
+    }
+
+    // Toggle / Update Existing Vendor
     const { vendorId, approved, riskStatus } = body;
 
     const vendor = getVendorById(vendorId);

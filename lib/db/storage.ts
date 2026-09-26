@@ -171,6 +171,18 @@ export function updateVendor(id: string, updates: Partial<Vendor>): Vendor | nul
   return store.vendors[index];
 }
 
+export function createVendor(data: Omit<Vendor, 'id' | 'createdAt'>): Vendor {
+  const store = getStore();
+  const newVendor: Vendor = {
+    id: `ven_${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    ...data,
+  };
+  store.vendors.push(newVendor);
+  saveStore(store);
+  return newVendor;
+}
+
 export function getContracts(): Contract[] {
   return getStore().contracts;
 }

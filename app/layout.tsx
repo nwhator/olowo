@@ -33,7 +33,26 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${ibmPlexMono.variable} h-full antialiased light`}
       data-theme="light"
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('olowo-theme');
+                  var theme = (saved === 'dark') ? 'dark' : 'light';
+                  var root = document.documentElement;
+                  root.classList.remove('dark', 'light');
+                  root.classList.add(theme);
+                  root.setAttribute('data-theme', theme);
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-[#F7F8FA] dark:bg-[#08111F] text-[#101828] dark:text-white transition-colors duration-150">
         <ThemeProvider>{children}</ThemeProvider>
       </body>

@@ -13,13 +13,17 @@ import {
   ArrowRight,
   Filter,
   Search,
+  FileUp,
 } from 'lucide-react';
+import { UploadInvoiceModal } from '@/components/invoices/UploadInvoiceModal';
+import { playSound } from '@/lib/sound';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   const fetchInvoices = async () => {
     try {
@@ -120,6 +124,12 @@ export default function InvoicesPage() {
       subtitle="Continuous obligation verification and settlement"
       onRefresh={fetchInvoices}
     >
+      <UploadInvoiceModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onInvoiceProcessed={fetchInvoices}
+      />
+
       <div className="space-y-6">
         {/* Controls Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -135,18 +145,31 @@ export default function InvoicesPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Filter className="w-3.5 h-3.5 text-[#94A3B8] dark:text-[#5E6E85]" />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white font-mono font-semibold focus:outline-none focus:border-[#00A878] dark:focus:border-[#35E0B2] shadow-xs"
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-[#94A3B8] dark:text-[#5E6E85]" />
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-3 py-2 rounded-xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white font-mono font-semibold focus:outline-none focus:border-[#00A878] dark:focus:border-[#35E0B2] shadow-xs"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="AUTONOMOUS_PAID">Autonomous Paid</option>
+                <option value="APPROVAL_REQUIRED">Approval Required</option>
+                <option value="VERIFIED">Verified / Scheduled</option>
+                <option value="BLOCKED">Blocked</option>
+              </select>
+            </div>
+
+            <button
+              onClick={() => {
+                playSound('click');
+                setIsUploadOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00A878] hover:bg-[#009166] text-white text-xs font-semibold shadow-xs transition-all whitespace-nowrap"
             >
-              <option value="ALL">All Statuses</option>
-              <option value="AUTONOMOUS_PAID">Autonomous Paid</option>
-              <option value="APPROVAL_REQUIRED">Approval Required</option>
-              <option value="VERIFIED">Verified / Scheduled</option>
-              <option value="BLOCKED">Blocked</option>
-            </select>
+              <FileUp className="w-3.5 h-3.5" />
+              <span>+ Ingest Invoice</span>
+            </button>
           </div>
         </div>
 

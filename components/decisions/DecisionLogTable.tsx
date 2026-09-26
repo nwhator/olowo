@@ -11,10 +11,12 @@ import {
   ExternalLink,
   Lock,
   Filter,
+  Download,
 } from 'lucide-react';
 import { AuditEvent } from '@/types';
 import { formatArcTxHash, getArcExplorerUrl } from '@/lib/arc';
 import { ArcExplorerModal, ArcTxDetails } from '@/components/arc/ArcExplorerModal';
+import { playSound } from '@/lib/sound';
 
 interface DecisionLogTableProps {
   events: AuditEvent[];
@@ -29,6 +31,30 @@ export function DecisionLogTable({ events }: DecisionLogTableProps) {
     if (filterAction === 'ALL') return true;
     return ev.action === filterAction;
   });
+
+  const handleExportCSV = () => {
+    playSound('click');
+    const headers = ['Timestamp', 'Action', 'Entity', 'Type', 'Amount (USDC)', 'Decision', 'Authorization', 'Reason', 'Transaction Hash'];
+    const rows = filteredEvents.map((e) => [
+      e.timestamp,
+      e.action,
+      `"${e.entity.replace(/"/g, '""')}"`,
+      e.entityType,
+      e.amount || 0,
+      e.decision,
+      e.authorization,
+      `"${(e.reason || '').replace(/"/g, '""')}"`,
+      e.transactionHash || 'N/A',
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `olowo_audit_trail_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const getActionBadge = (action: AuditEvent['action']) => {
     switch (action) {
@@ -93,20 +119,29 @@ export function DecisionLogTable({ events }: DecisionLogTableProps) {
             </div>
           </div>
 
-          {/* Action filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-3.5 h-3.5 text-[#94A3B8] dark:text-[#5E6E85]" />
-            <select
-              value={filterAction}
-              onChange={(e) => setFilterAction(e.target.value)}
-              className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white font-mono font-semibold focus:outline-none focus:border-[#00A878]"
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Filter className="w-3.5 h-3.5 text-[#94A3B8] dark:text-[#5E6E85]" />
+              <select
+                value={filterAction}
+                onChange={(e) => setFilterAction(e.target.value)}
+                className="px-3 py-1.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white font-mono font-semibold focus:outline-none focus:border-[#00A878]"
+              >
+                <option value="ALL">All Actions</option>
+                <option value="PAYMENT_EXECUTED">Payments Executed</option>
+                <option value="APPROVAL_REQUESTED">Approvals Requested</option>
+                <option value="PAYMENT_BLOCKED">Payments Blocked</option>
+                <option value="OBLIGATION_RESERVED">Obligations Reserved</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#F1F5F9] dark:bg-[#08111F] hover:bg-[#E2E8F0] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-semibold text-[#101828] dark:text-white transition-all shadow-2xs whitespace-nowrap"
             >
-              <option value="ALL">All Actions</option>
-              <option value="PAYMENT_EXECUTED">Payments Executed</option>
-              <option value="APPROVAL_REQUESTED">Approvals Requested</option>
-              <option value="PAYMENT_BLOCKED">Payments Blocked</option>
-              <option value="OBLIGATION_RESERVED">Obligations Reserved</option>
-            </select>
+              <Download className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
+              <span>Export CSV</span>
+            </button>
           </div>
         </div>
 

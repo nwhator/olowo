@@ -5,6 +5,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Vendor } from '@/types';
 import { formatArcAddress } from '@/lib/arc';
 import { playSound } from '@/lib/sound';
+import { AddVendorModal } from '@/components/vendors/AddVendorModal';
 import {
   Users,
   CheckCircle2,
@@ -21,6 +22,7 @@ export default function VendorsPage() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
 
   const fetchVendors = async () => {
     try {
@@ -64,17 +66,34 @@ export default function VendorsPage() {
       subtitle="Approved counterparties, wallet addresses, and risk status"
       onRefresh={fetchVendors}
     >
+      <AddVendorModal
+        isOpen={isAddVendorOpen}
+        onClose={() => setIsAddVendorOpen(false)}
+        onVendorAdded={fetchVendors}
+      />
+
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-bold text-[#101828] dark:text-white tracking-tight">Company Whitelist & Counterparties</h2>
             <p className="text-xs text-[#64748B] dark:text-[#8896AB]">
               OLOWO strictly validates that recipients are whitelisted before autonomous payouts
             </p>
           </div>
-          <span className="text-xs font-mono px-3 py-1 rounded-xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[#00A878] dark:text-[#35E0B2] shadow-xs">
-            {vendors.filter((v) => v.approved).length} Approved Vendors
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[#00A878] dark:text-[#35E0B2] shadow-xs">
+              {vendors.filter((v) => v.approved).length} Approved Vendors
+            </span>
+            <button
+              onClick={() => {
+                playSound('click');
+                setIsAddVendorOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#00A878] hover:bg-[#009166] text-white text-xs font-semibold shadow-xs transition-all"
+            >
+              <span>+ Add Counterparty</span>
+            </button>
+          </div>
         </div>
 
         {/* Vendors Grid */}
