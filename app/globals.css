@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #08111F;
+  --foreground: #F7F8FA;
+  --navy: #08111F;
+  --navy-card: #0D192C;
+  --navy-card-hover: #12223B;
+  --navy-border: #1A2D4C;
+  --navy-muted: #16243C;
+  --mint: #35E0B2;
+  --mint-glow: rgba(53, 224, 178, 0.15);
+  --electric-blue: #4D7CFE;
+  --amber: #F5B942;
+  --red: #EF5B5B;
+  --text-main: #FFFFFF;
+  --text-muted: #8896AB;
+  --text-dim: #5E6E85;
+  --font-inter: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-olowo-navy: #08111F;
+  --color-olowo-navy-card: #0D192C;
+  --color-olowo-navy-hover: #12223B;
+  --color-olowo-navy-border: #1A2D4C;
+  --color-olowo-navy-muted: #16243C;
+  --color-olowo-mint: #35E0B2;
+  --color-olowo-blue: #4D7CFE;
+  --color-olowo-amber: #F5B942;
+  --color-olowo-red: #EF5B5B;
+  --color-olowo-offwhite: #F7F8FA;
+  --color-olowo-muted: #8896AB;
+  --color-olowo-dim: #5E6E85;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #08111F;
+  color: #F7F8FA;
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.font-mono-numbers {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #08111F;
+}
+::-webkit-scrollbar-thumb {
+  background: #1A2D4C;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #253E68;
+}
+
+/* Pulse Glows */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes radar-scan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar {
+  animation: radar-scan 4s linear infinite;
 }
