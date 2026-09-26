@@ -86,10 +86,10 @@ export function OlowoMascot({
       <div className={`relative flex items-center justify-center ${currentSize.container}`}>
         {/* Outer Ring */}
         <div
-          className={`relative flex items-center justify-center rounded-2xl bg-[#0D192C] transition-all duration-300 ${currentSize.ring} ${config.color} ${config.glow}`}
+          className={`relative flex items-center justify-center rounded-2xl bg-[#F1F5F9] dark:bg-[#0D192C] transition-all duration-300 ${currentSize.ring} ${config.color} ${config.glow}`}
         >
           {/* Subtle inner ambient ring */}
-          <div className="absolute inset-1 rounded-xl bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+          <div className="absolute inset-1 rounded-xl bg-gradient-to-b from-black/[0.02] dark:from-white/[0.04] to-transparent pointer-events-none" />
 
           {/* Expressive minimal eyes */}
           <div className={`flex items-center justify-center ${currentSize.gap}`}>
@@ -104,19 +104,19 @@ export function OlowoMascot({
 
         {/* Status indicator pip */}
         <span
-          className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${config.dotColor} ring-2 ring-[#08111F]`}
+          className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${config.dotColor} ring-2 ring-white dark:ring-[#08111F]`}
         />
       </div>
 
       {showStatusText && (
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-semibold tracking-wider text-white">OLOWO</span>
+            <span className="text-xs font-semibold tracking-wider text-[#101828] dark:text-white">OLOWO</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded border font-mono font-medium ${config.badgeClass}`}>
               {config.badgeText}
             </span>
           </div>
-          <span className="text-xs text-[#8896AB] mt-0.5">{config.statusText}</span>
+          <span className="text-xs text-[#64748B] dark:text-[#8896AB] mt-0.5">{config.statusText}</span>
         </div>
       )}
     </div>

@@ -1,23 +1,47 @@
 @import "tailwindcss";
 
 :root {
+  /* Default Light Theme */
+  --background: #F7F8FA;
+  --foreground: #101828;
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --card-hover: #F1F5F9;
+  --text-main: #101828;
+  --text-muted: #667085;
+  --text-dim: #94A3B8;
+  --mint: #00A878;
+  --mint-glow: rgba(0, 168, 120, 0.15);
+  --electric-blue: #2563EB;
+  --amber: #D97706;
+  --red: #DC2626;
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #E2E8F0;
+  --sidebar-text: #344054;
+  --sidebar-active: #F1F5F9;
+  --font-inter: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+html.dark, [data-theme="dark"] {
+  /* Opt-in Dark Theme */
   --background: #08111F;
   --foreground: #F7F8FA;
-  --navy: #08111F;
-  --navy-card: #0D192C;
-  --navy-card-hover: #12223B;
-  --navy-border: #1A2D4C;
-  --navy-muted: #16243C;
+  --card-bg: #0D192C;
+  --card-border: #1A2D4C;
+  --card-hover: #12223B;
+  --text-main: #FFFFFF;
+  --text-muted: #8896AB;
+  --text-dim: #5E6E85;
   --mint: #35E0B2;
   --mint-glow: rgba(53, 224, 178, 0.15);
   --electric-blue: #4D7CFE;
   --amber: #F5B942;
   --red: #EF5B5B;
-  --text-main: #FFFFFF;
-  --text-muted: #8896AB;
-  --text-dim: #5E6E85;
-  --font-inter: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+  --sidebar-bg: #08111F;
+  --sidebar-border: #1A2D4C;
+  --sidebar-text: #8896AB;
+  --sidebar-active: #12223B;
 }
 
 @theme {
@@ -36,12 +60,13 @@
 }
 
 body {
-  background-color: #08111F;
-  color: #F7F8FA;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .font-mono-numbers {
@@ -56,13 +81,21 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #08111F;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1A2D4C;
+  background: #CBD5E1;
   border-radius: 9999px;
 }
+html.dark ::-webkit-scrollbar-thumb,
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #1A2D4C;
+}
 ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+html.dark ::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
   background: #253E68;
 }
 

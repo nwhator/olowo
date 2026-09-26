@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { OperatorChatMessage, MascotState } from '@/types';
+import { playClickSound, playPaymentSuccessSound } from '@/lib/sound';
 
 interface OperatorChatProps {
   mascotState?: MascotState;
@@ -50,6 +51,8 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
     const q = queryText.trim();
     if (!q || isLoading) return;
 
+    playClickSound();
+
     const userMsg: OperatorChatMessage = {
       id: `u_${Date.now()}`,
       sender: 'user',
@@ -80,6 +83,7 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
       };
 
       setMessages((prev) => [...prev, olowoMsg]);
+      playPaymentSuccessSound();
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -96,38 +100,38 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
   }
 
   return (
-    <div className="rounded-2xl bg-[#0D192C] border border-[#1A2D4C] flex flex-col h-[650px] overflow-hidden">
+    <div className="rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] flex flex-col h-[650px] overflow-hidden shadow-xs transition-colors">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-[#1A2D4C] flex items-center justify-between bg-[#08111F]">
+      <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between bg-white dark:bg-[#08111F]">
         <div className="flex items-center gap-3">
           <OlowoMascot state={mascotState} size="sm" />
           <div>
-            <h3 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[#101828] dark:text-white tracking-tight flex items-center gap-2">
               OLOWO Intelligent Operator
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#35E0B2]/10 text-[#35E0B2] border border-[#35E0B2]/30">
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#00A878]/10 text-[#00A878] dark:bg-[#35E0B2]/10 dark:text-[#35E0B2] border border-[#00A878]/30 dark:border-[#35E0B2]/30 font-semibold">
                 POLICY GROUNDED
               </span>
             </h3>
-            <p className="text-[11px] text-[#8896AB]">
+            <p className="text-[11px] text-[#64748B] dark:text-[#8896AB]">
               Answers synthesized directly from verified database records and mandate rules
             </p>
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-[#5E6E85]">
+        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-[#94A3B8] dark:text-[#5E6E85]">
           <Terminal className="w-3.5 h-3.5" />
           <span>TOOL-CALLING ACTIVE</span>
         </div>
       </div>
 
       {/* Suggested Questions Pills */}
-      <div className="px-6 py-3 border-b border-[#1A2D4C]/60 bg-[#0A1424] flex items-center gap-2 overflow-x-auto">
-        <span className="text-[11px] font-mono text-[#5E6E85] shrink-0">SUGGESTED:</span>
+      <div className="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]/60 bg-[#F8FAFC] dark:bg-[#0A1424] flex items-center gap-2 overflow-x-auto">
+        <span className="text-[11px] font-mono text-[#94A3B8] dark:text-[#5E6E85] shrink-0 font-semibold">SUGGESTED:</span>
         {suggestedQuestions.map((sq, i) => (
           <button
             key={i}
             onClick={() => handleSend(sq)}
-            className="text-[11px] px-3 py-1 rounded-full bg-[#12223B] hover:bg-[#1A2D4C] text-[#8896AB] hover:text-white border border-[#1A2D4C] transition-colors shrink-0"
+            className="text-[11px] px-3 py-1 rounded-full bg-white dark:bg-[#12223B] hover:bg-[#F1F5F9] dark:hover:bg-[#1A2D4C] text-[#344054] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white border border-[#E2E8F0] dark:border-[#1A2D4C] transition-colors shrink-0 shadow-2xs font-medium"
           >
             {sq}
           </button>
@@ -146,26 +150,26 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
             )}
 
             <div
-              className={`max-w-xl rounded-2xl p-4 space-y-3 ${
+              className={`max-w-xl rounded-2xl p-4 space-y-3 shadow-2xs ${
                 m.sender === 'user'
-                  ? 'bg-[#12223B] text-white border border-[#1A2D4C]'
-                  : 'bg-[#08111F] text-white border border-[#1A2D4C]/80'
+                  ? 'bg-[#F1F5F9] dark:bg-[#12223B] text-[#101828] dark:text-white border border-[#E2E8F0] dark:border-[#1A2D4C]'
+                  : 'bg-[#F8FAFC] dark:bg-[#08111F] text-[#101828] dark:text-white border border-[#E2E8F0] dark:border-[#1A2D4C]/80'
               }`}
             >
-              <div className="text-xs leading-relaxed whitespace-pre-line text-white/95">
+              <div className="text-xs leading-relaxed whitespace-pre-line text-[#101828] dark:text-white/95">
                 {m.text}
               </div>
 
               {/* Verified Facts snapshot */}
               {m.verifiedFacts && m.verifiedFacts.length > 0 && (
-                <div className="pt-2 border-t border-[#1A2D4C] space-y-1">
-                  <span className="text-[10px] font-mono font-medium text-[#5E6E85] uppercase tracking-wider block">
+                <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C] space-y-1">
+                  <span className="text-[10px] font-mono font-bold text-[#94A3B8] dark:text-[#5E6E85] uppercase tracking-wider block">
                     VERIFIED SYSTEM FACTS:
                   </span>
                   <div className="space-y-1">
                     {m.verifiedFacts.map((fact, idx) => (
-                      <div key={idx} className="flex items-start gap-1.5 text-[11px] text-[#8896AB]">
-                        <CheckCircle2 className="w-3 h-3 text-[#35E0B2] shrink-0 mt-0.5" />
+                      <div key={idx} className="flex items-start gap-1.5 text-[11px] text-[#475467] dark:text-[#8896AB]">
+                        <CheckCircle2 className="w-3 h-3 text-[#00A878] dark:text-[#35E0B2] shrink-0 mt-0.5" />
                         <span>{fact}</span>
                       </div>
                     ))}
@@ -176,11 +180,11 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
               {/* Tools invoked badge */}
               {m.toolsUsed && m.toolsUsed.length > 0 && (
                 <div className="pt-1 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-[#5E6E85]">TOOLS:</span>
+                  <span className="text-[9px] font-mono text-[#94A3B8] dark:text-[#5E6E85] font-semibold">TOOLS:</span>
                   {m.toolsUsed.map((tool, idx) => (
                     <span
                       key={idx}
-                      className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#12223B] text-[#4D7CFE] border border-[#1A2D4C]"
+                      className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-[#12223B] text-[#2563EB] dark:text-[#4D7CFE] border border-[#E2E8F0] dark:border-[#1A2D4C]"
                     >
                       {tool}
                     </span>
@@ -192,7 +196,7 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
                 <div className="pt-2">
                   <Link
                     href={m.relatedActionUrl}
-                    className="inline-flex items-center gap-1 text-xs text-[#35E0B2] hover:underline font-medium"
+                    className="inline-flex items-center gap-1 text-xs text-[#00A878] dark:text-[#35E0B2] hover:underline font-semibold"
                   >
                     <span>Inspect Record in UI</span>
                     <ExternalLink className="w-3 h-3" />
@@ -202,7 +206,7 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
             </div>
 
             {m.sender === 'user' && (
-              <div className="p-2 rounded-xl bg-[#12223B] border border-[#1A2D4C] text-[#8896AB] shrink-0 mt-1">
+              <div className="p-2 rounded-xl bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[#64748B] shrink-0 mt-1 shadow-2xs">
                 <User className="w-4 h-4" />
               </div>
             )}
@@ -210,8 +214,8 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
         ))}
 
         {isLoading && (
-          <div className="flex items-center gap-3 text-xs text-[#8896AB] pl-2">
-            <Loader2 className="w-4 h-4 animate-spin text-[#35E0B2]" />
+          <div className="flex items-center gap-3 text-xs text-[#64748B] dark:text-[#8896AB] pl-2">
+            <Loader2 className="w-4 h-4 animate-spin text-[#00A878] dark:text-[#35E0B2]" />
             <span className="font-mono text-[11px]">OLOWO is evaluating policies and database state...</span>
           </div>
         )}
@@ -223,19 +227,19 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
           e.preventDefault();
           handleSend(input);
         }}
-        className="p-4 border-t border-[#1A2D4C] bg-[#08111F] flex items-center gap-3"
+        className="p-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#08111F] flex items-center gap-3"
       >
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask OLOWO about your business..."
-          className="flex-1 px-4 py-2.5 rounded-xl bg-[#0D192C] border border-[#1A2D4C] text-xs text-white placeholder-[#5E6E85] focus:outline-none focus:border-[#35E0B2] transition-colors"
+          className="flex-1 px-4 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white placeholder-[#94A3B8] dark:placeholder-[#5E6E85] focus:outline-none focus:border-[#00A878] dark:focus:border-[#35E0B2] transition-colors"
         />
         <button
           type="submit"
           disabled={!input.trim() || isLoading}
-          className="p-2.5 rounded-xl bg-[#35E0B2] hover:bg-[#3ff0c0] text-[#08111F] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
+          className="p-2.5 rounded-xl bg-[#00A878] hover:bg-[#008f66] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
         >
           <Send className="w-4 h-4" />
         </button>

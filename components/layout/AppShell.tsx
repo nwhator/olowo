@@ -11,9 +11,10 @@ interface AppShellProps {
   children: React.ReactNode;
   title: string;
   subtitle: string;
+  onRefresh?: () => void;
 }
 
-export function AppShell({ children, title, subtitle }: AppShellProps) {
+export function AppShell({ children, title, subtitle, onRefresh }: AppShellProps) {
   const [policy, setPolicy] = useState<Policy | null>(null);
   const [treasury, setTreasury] = useState<Treasury | null>(null);
   const [pendingApprovalsCount, setPendingApprovalsCount] = useState<number>(2);
@@ -23,6 +24,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
 
   const fetchData = async () => {
     try {
+      if (onRefresh) onRefresh();
       const [resTreasury, resMandate, resApprovals] = await Promise.all([
         fetch('/api/treasury'),
         fetch('/api/mandate'),
@@ -91,7 +93,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#08111F] text-white flex flex-col">
+    <div className="min-h-screen bg-[#F7F8FA] dark:bg-[#08111F] text-[#101828] dark:text-white flex flex-col transition-colors duration-150">
       {/* Scripted Hackathon Demo Modal */}
       <DemoRunnerModal
         isOpen={isDemoOpen}
@@ -126,6 +128,7 @@ export function AppShell({ children, title, subtitle }: AppShellProps) {
             onRunDemo={() => setIsDemoOpen(true)}
             onResetData={handleResetData}
             isResetting={isResetting}
+            onStateRefreshed={fetchData}
           />
 
           <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto space-y-8">

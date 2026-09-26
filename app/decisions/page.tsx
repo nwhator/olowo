@@ -30,11 +30,12 @@ export default function DecisionsPage() {
     <AppShell
       title="Decision Log"
       subtitle="Complete, explainable audit trail of every financial action"
+      onRefresh={fetchEvents}
     >
       <div className="space-y-8">
         {isLoading ? (
-          <div className="flex items-center justify-center py-20 text-[#8896AB] gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-[#35E0B2]" />
+          <div className="flex items-center justify-center py-20 text-[#64748B] dark:text-[#8896AB] gap-3">
+            <Loader2 className="w-5 h-5 animate-spin text-[#00A878] dark:text-[#35E0B2]" />
             <span className="font-mono text-xs">Loading immutable decision log...</span>
           </div>
         ) : (

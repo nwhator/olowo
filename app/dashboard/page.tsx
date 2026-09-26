@@ -108,7 +108,11 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <AppShell title="Good afternoon." subtitle="OLOWO is operating normally.">
+    <AppShell
+      title="Good afternoon."
+      subtitle="OLOWO is operating normally."
+      onRefresh={loadData}
+    >
       {isLoading || !treasury || !forecast ? (
         <div className="flex items-center justify-center py-20 text-[#8896AB] gap-3">
           <Loader2 className="w-5 h-5 animate-spin text-[#35E0B2]" />

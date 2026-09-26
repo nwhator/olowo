@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Approval } from '@/types';
 import confetti from 'canvas-confetti';
+import { playPaymentSuccessSound, playBlockedSound } from '@/lib/sound';
 
 interface ApprovalCardProps {
   approval: Approval;
@@ -23,7 +24,7 @@ interface ApprovalCardProps {
 export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [actionDone, setActionDone] = useState<'APPROVED' | 'REJECTED' | null>(
-    approval.status !== 'PENDING' ? approval.status : null
+    approval.status !== 'PENDING' ? (approval.status as 'APPROVED' | 'REJECTED') : null
   );
   const [txHash, setTxHash] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -48,15 +49,17 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
       setActionDone(action === 'APPROVE' ? 'APPROVED' : 'REJECTED');
       if (data.transactionHash) {
         setTxHash(data.transactionHash);
-        // Confetti celebration on human approval settlement
+        playPaymentSuccessSound();
         try {
           confetti({
             particleCount: 60,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ['#35E0B2', '#4D7CFE', '#F5B942'],
+            colors: ['#00A878', '#2563EB', '#F59E0B'],
           });
         } catch (_) {}
+      } else {
+        playBlockedSound();
       }
 
       if (onResolved) onResolved();
@@ -69,23 +72,23 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
 
   return (
     <div
-      className={`rounded-xl border transition-all ${
+      className={`rounded-2xl border transition-all shadow-xs overflow-hidden ${
         actionDone === 'APPROVED'
-          ? 'bg-[#0D192C] border-[#35E0B2]/40'
+          ? 'bg-white dark:bg-[#0D192C] border-[#00A878]/40 dark:border-[#35E0B2]/40'
           : actionDone === 'REJECTED'
-          ? 'bg-[#0D192C] border-[#EF5B5B]/30 opacity-70'
-          : 'bg-[#0D192C] border-[#F5B942]/40 shadow-[0_0_25px_rgba(245,185,66,0.06)]'
-      } overflow-hidden`}
+          ? 'bg-white dark:bg-[#0D192C] border-[#DC2626]/30 opacity-70'
+          : 'bg-white dark:bg-[#0D192C] border-[#FDE68A] dark:border-[#F5B942]/40 shadow-sm'
+      }`}
     >
       {/* Top Warning Ribbon */}
-      <div className="px-5 py-2.5 bg-[#08111F] border-b border-[#1A2D4C] flex items-center justify-between">
+      <div className="px-5 py-2.5 bg-[#FFFBEB] dark:bg-[#08111F] border-b border-[#FDE68A] dark:border-[#1A2D4C] flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs">
-          <AlertTriangle className="w-3.5 h-3.5 text-[#F5B942]" />
-          <span className="font-mono text-[#F5B942] font-semibold uppercase tracking-wider text-[11px]">
+          <AlertTriangle className="w-3.5 h-3.5 text-[#D97706] dark:text-[#F5B942]" />
+          <span className="font-mono text-[#D97706] dark:text-[#F5B942] font-bold uppercase tracking-wider text-[11px]">
             EXCEEDS AUTONOMOUS MANDATE
           </span>
         </div>
-        <span className="text-[11px] font-mono text-[#8896AB]">
+        <span className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
           {approval.invoiceNumber}
         </span>
       </div>
@@ -95,37 +98,37 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-white">{approval.vendorName}</h3>
+              <h3 className="text-lg font-bold text-[#101828] dark:text-white">{approval.vendorName}</h3>
               <Link
                 href={`/invoices/${approval.invoiceId}`}
-                className="text-[11px] text-[#4D7CFE] hover:underline flex items-center gap-0.5"
+                className="text-[11px] text-[#2563EB] dark:text-[#4D7CFE] hover:underline flex items-center gap-0.5 font-semibold"
               >
                 <span>View Invoice</span>
                 <ExternalLink className="w-3 h-3" />
               </Link>
             </div>
-            <p className="text-xs text-[#8896AB] mt-1">{approval.reason}</p>
+            <p className="text-xs text-[#64748B] dark:text-[#8896AB] mt-1">{approval.reason}</p>
           </div>
 
-          <div className="text-right sm:text-right">
-            <div className="text-2xl font-bold font-mono-numbers text-white">
+          <div className="text-left sm:text-right">
+            <div className="text-2xl font-bold font-mono-numbers text-[#101828] dark:text-white">
               ${approval.amount.toLocaleString()}
             </div>
-            <div className="text-[11px] font-mono text-[#35E0B2]">
+            <div className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] font-semibold">
               {approval.currency} • Arc Network
             </div>
           </div>
         </div>
 
         {/* Verification Summary List */}
-        <div className="p-4 rounded-xl bg-[#08111F] border border-[#1A2D4C] space-y-2">
-          <div className="text-[11px] font-mono text-[#5E6E85] uppercase tracking-wider">
+        <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2">
+          <div className="text-[11px] font-mono text-[#94A3B8] dark:text-[#5E6E85] uppercase tracking-wider font-semibold">
             VERIFICATION AUDIT SNAPSHOT
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             {approval.checksSummary.map((chk, i) => (
-              <div key={i} className="flex items-center gap-2 text-white/90">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#35E0B2] shrink-0" />
+              <div key={i} className="flex items-center gap-2 text-[#344054] dark:text-white/90">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2] shrink-0" />
                 <span>{chk}</span>
               </div>
             ))}
@@ -133,40 +136,40 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
         </div>
 
         {/* AI Recommendation Box */}
-        <div className="p-4 rounded-xl bg-[#12223B]/60 border border-[#4D7CFE]/30 flex items-start gap-3">
-          <div className="p-1.5 rounded-lg bg-[#4D7CFE]/10 text-[#4D7CFE] shrink-0 mt-0.5">
+        <div className="p-4 rounded-xl bg-[#EFF6FF] dark:bg-[#12223B]/60 border border-[#BFDBFE] dark:border-[#4D7CFE]/30 flex items-start gap-3">
+          <div className="p-1.5 rounded-lg bg-[#2563EB]/10 text-[#2563EB] dark:text-[#4D7CFE] shrink-0 mt-0.5">
             <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-xs flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-white font-mono uppercase text-[11px]">
+              <span className="font-semibold text-[#1E3A8A] dark:text-white font-mono uppercase text-[11px]">
                 OLOWO RECOMMENDATION:
               </span>
-              <span className="font-bold text-[#35E0B2] font-mono">
+              <span className="font-bold text-[#00A878] dark:text-[#35E0B2] font-mono">
                 {approval.aiRecommendation}
               </span>
             </div>
-            <p className="text-[#8896AB] mt-1 text-[11px] leading-relaxed">
+            <p className="text-[#475467] dark:text-[#8896AB] mt-1 text-[11px] leading-relaxed">
               The invoice is fully verified, but exceeds OLOWO&apos;s autonomous authority. Solvency and contract deliverables confirmed.
             </p>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="p-3 rounded-lg bg-[#EF5B5B]/10 border border-[#EF5B5B]/30 text-xs text-[#EF5B5B]">
+          <div className="p-3 rounded-lg bg-[#FEF2F2] dark:bg-[#EF5B5B]/10 border border-[#FCA5A5] dark:border-[#EF5B5B]/30 text-xs text-[#DC2626] dark:text-[#EF5B5B]">
             {errorMsg}
           </div>
         )}
 
         {/* Transaction Result if executed */}
         {txHash && (
-          <div className="p-3.5 rounded-xl bg-[#35E0B2]/10 border border-[#35E0B2]/30 flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2 text-[#35E0B2]">
+          <div className="p-3.5 rounded-xl bg-[#ECFDF5] dark:bg-[#35E0B2]/10 border border-[#A7F3D0] dark:border-[#35E0B2]/30 flex items-center justify-between text-xs font-mono">
+            <div className="flex items-center gap-2 text-[#00A878] dark:text-[#35E0B2]">
               <CheckCircle2 className="w-4 h-4" />
               <span>Settlement Executed via Arc:</span>
-              <span className="text-white">{txHash.substring(0, 10)}...{txHash.substring(txHash.length - 6)}</span>
+              <span className="text-[#101828] dark:text-white font-bold">{txHash.substring(0, 10)}...{txHash.substring(txHash.length - 6)}</span>
             </div>
-            <span className="text-[10px] text-[#35E0B2] uppercase font-bold">Confirmed</span>
+            <span className="text-[10px] text-[#00A878] dark:text-[#35E0B2] uppercase font-bold">Confirmed</span>
           </div>
         )}
 
@@ -176,7 +179,7 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
             <button
               onClick={() => handleAction('REJECT')}
               disabled={isProcessing}
-              className="px-4 py-2 rounded-lg border border-[#1A2D4C] bg-[#08111F] hover:bg-[#12223B] text-xs font-medium text-[#EF5B5B] hover:border-[#EF5B5B]/40 transition-all disabled:opacity-50"
+              className="px-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#08111F] hover:bg-[#FEF2F2] text-xs font-semibold text-[#DC2626] hover:border-[#DC2626]/40 transition-all disabled:opacity-50"
             >
               Reject Invoice
             </button>
@@ -184,7 +187,7 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
             <button
               onClick={() => handleAction('APPROVE')}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#35E0B2] hover:bg-[#3ff0c0] text-[#08111F] text-xs font-semibold shadow-lg shadow-[#35E0B2]/20 transition-all transform hover:scale-[1.01] disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00A878] hover:bg-[#008f66] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] text-xs font-bold shadow-sm transition-all transform hover:scale-[1.01] disabled:opacity-50"
             >
               {isProcessing ? (
                 <>
@@ -200,8 +203,8 @@ export function ApprovalCard({ approval, onResolved }: ApprovalCardProps) {
             </button>
           </div>
         ) : (
-          <div className="text-right text-xs font-mono text-[#8896AB] pt-2">
-            Status: <span className="text-white font-semibold">{actionDone}</span> by Business Owner
+          <div className="text-right text-xs font-mono text-[#64748B] dark:text-[#8896AB] pt-2">
+            Status: <span className="text-[#101828] dark:text-white font-bold">{actionDone}</span> by Business Owner
           </div>
         )}
       </div>

@@ -30,21 +30,24 @@ export default function MandatePage() {
     <AppShell
       title="OLOWO Mandate"
       subtitle="Your mandate defines what OLOWO is authorized to do without asking you"
+      onRefresh={fetchPolicy}
     >
       <div className="space-y-8">
-        <div className="flex items-center gap-3 pb-2 border-b border-[#1A2D4C]">
-          <Shield className="w-5 h-5 text-[#35E0B2]" />
+        <div className="flex items-center gap-3 pb-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
+          <div className="p-2 rounded-xl bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2]">
+            <Shield className="w-5 h-5" />
+          </div>
           <div>
-            <h2 className="text-base font-bold text-white tracking-tight">Financial Authority Mandate</h2>
-            <p className="text-xs text-[#8896AB]">
+            <h2 className="text-base font-bold text-[#101828] dark:text-white tracking-tight">Financial Authority Mandate</h2>
+            <p className="text-xs text-[#64748B] dark:text-[#8896AB]">
               Configure the exact deterministic thresholds, compliance checks, and emergency controls for your AI operator.
             </p>
           </div>
         </div>
 
         {isLoading || !policy ? (
-          <div className="flex items-center justify-center py-20 text-[#8896AB] gap-3">
-            <Loader2 className="w-5 h-5 animate-spin text-[#35E0B2]" />
+          <div className="flex items-center justify-center py-20 text-[#64748B] dark:text-[#8896AB] gap-3">
+            <Loader2 className="w-5 h-5 animate-spin text-[#00A878] dark:text-[#35E0B2]" />
             <span className="font-mono text-xs">Loading company mandate rules...</span>
           </div>
         ) : (
