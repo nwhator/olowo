@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { DemoRunnerModal } from '@/components/demo/DemoRunnerModal';
+import { WhatsAppTraderSimulator } from '@/components/simulator/WhatsAppTraderSimulator';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { useMarket } from '@/components/market/MarketContext';
 import { playSound } from '@/lib/sound';
@@ -734,6 +735,23 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* INTERACTIVE WHATSAPP COMMERCE SIMULATOR */}
+      <section className="py-14 sm:py-20 px-3.5 sm:px-6 max-w-5xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
+            AFRICAN TRADE REALITY
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+            Interactive WhatsApp Commerce Simulator
+          </h2>
+          <p className="text-xs sm:text-sm text-[#475569] dark:text-[#8896AB] max-w-xl mx-auto leading-relaxed">
+            Experience how real grain suppliers in Kano and cross-border hauliers in Cotonou transact with Mama Ngozi using WhatsApp waybills and sub-second Arc USDC payments.
+          </p>
+        </div>
+
+        <WhatsAppTraderSimulator />
       </section>
 
       {/* DECISION LOG / EUTHYNA AUDIT TRAIL */}

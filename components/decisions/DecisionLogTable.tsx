@@ -16,6 +16,7 @@ import {
 import { AuditEvent } from '@/types';
 import { formatArcTxHash, getArcExplorerUrl } from '@/lib/arc';
 import { ArcExplorerModal, ArcTxDetails } from '@/components/arc/ArcExplorerModal';
+import { DecisionReplayModal } from '@/components/decisions/DecisionReplayModal';
 import { playSound } from '@/lib/sound';
 
 interface DecisionLogTableProps {
@@ -26,6 +27,7 @@ export function DecisionLogTable({ events }: DecisionLogTableProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filterAction, setFilterAction] = useState<string>('ALL');
   const [selectedTx, setSelectedTx] = useState<ArcTxDetails | null>(null);
+  const [replayEvent, setReplayEvent] = useState<AuditEvent | null>(null);
 
   const filteredEvents = events.filter((ev) => {
     if (filterAction === 'ALL') return true;
@@ -277,6 +279,24 @@ export function DecisionLogTable({ events }: DecisionLogTableProps) {
                               </div>
                             </div>
                           )}
+
+                          <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between flex-wrap gap-2">
+                            <span className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
+                              Euthyna Signed Audit Trail • Immutable Athenian Protocol
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                playSound('click');
+                                setReplayEvent(ev);
+                              }}
+                              className="px-3.5 py-1.5 rounded-lg bg-[#00A878] hover:bg-[#009166] text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all"
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>Replay 4-Stage Decision Trace</span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -287,6 +307,13 @@ export function DecisionLogTable({ events }: DecisionLogTableProps) {
           </table>
         </div>
       </div>
+
+      {/* Decision Replay Time Machine Modal */}
+      <DecisionReplayModal
+        isOpen={!!replayEvent}
+        onClose={() => setReplayEvent(null)}
+        event={replayEvent}
+      />
     </>
   );
 }

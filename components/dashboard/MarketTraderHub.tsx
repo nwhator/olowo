@@ -13,9 +13,11 @@ import {
   Store,
   CheckCircle2,
   HelpCircle,
+  MessageSquare,
 } from 'lucide-react';
 import { useMarket } from '@/components/market/MarketContext';
 import { UploadInvoiceModal } from '@/components/invoices/UploadInvoiceModal';
+import { WhatsAppTraderSimulator } from '@/components/simulator/WhatsAppTraderSimulator';
 
 interface MarketTraderHubProps {
   onRefresh?: () => void;
@@ -27,6 +29,7 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
     useMarket();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [activeCardAudio, setActiveCardAudio] = useState<string | null>(null);
+  const [showWhatsAppSimulator, setShowWhatsAppSimulator] = useState(false);
 
   const isPidgin = language === 'pidgin';
 
@@ -80,6 +83,14 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
 
           {/* Quick controls */}
           <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setShowWhatsAppSimulator(!showWhatsAppSimulator)}
+              className="px-3 py-1.5 rounded-lg border border-[#075E54]/30 bg-[#075E54]/10 text-[#075E54] dark:text-[#35E0B2] text-xs font-semibold hover:bg-[#075E54]/20 transition-all flex items-center gap-1.5 shadow-xs"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>{showWhatsAppSimulator ? 'Hide WhatsApp' : 'WhatsApp Simulator'}</span>
+            </button>
+
             <button
               onClick={toggleLanguage}
               className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#12223B] text-xs font-semibold text-[#101828] dark:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#1A2D4C] transition-all flex items-center gap-1.5 shadow-sm"
@@ -272,6 +283,13 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
             </button>
           </div>
         </div>
+
+        {/* Collapsible WhatsApp Trader Simulator */}
+        {showWhatsAppSimulator && (
+          <div className="mt-6 pt-5 border-t border-[#E2E8F0] dark:border-[#1A2D4C] animate-in fade-in">
+            <WhatsAppTraderSimulator />
+          </div>
+        )}
       </div>
     </>
   );
