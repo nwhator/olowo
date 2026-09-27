@@ -16,7 +16,7 @@ export async function GET() {
         consensusStatus: 'FINALIZED',
         gasToken: 'USDC',
         averageGasUsdc: 0.012,
-        rpcEndpoint: 'https://arc-node.thecanteenapp.com/',
+        rpcEndpoint: 'https://tameion.thecanteenapp.com/',
         testnetFaucet: 'https://testmint.myproceeds.xyz/',
       },
       wallets,

@@ -265,9 +265,15 @@ export default function InfrastructurePage() {
               <span className="text-[10px] font-mono text-[#64748B] dark:text-[#5E6E85] uppercase block">
                 RPC Node
               </span>
-              <span className="text-sm font-bold text-[#2563EB] dark:text-[#4D7CFE] font-mono mt-1 truncate block">
-                arc-node.thecanteenapp.com
-              </span>
+              <a
+                href="https://tameion.thecanteenapp.com/"
+                target="_blank"
+                rel="noopener"
+                className="text-sm font-bold text-[#2563EB] dark:text-[#4D7CFE] font-mono mt-1 truncate block hover:underline"
+                title="https://tameion.thecanteenapp.com/"
+              >
+                tameion.thecanteenapp.com
+              </a>
               <span className="text-[10px] text-[#00A878] dark:text-[#35E0B2]">Canteen Hosted</span>
             </div>
           </div>
