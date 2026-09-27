@@ -19,15 +19,33 @@ import {
   Clock,
   Sun,
   Moon,
+  Volume2,
+  VolumeX,
+  Languages,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { DemoRunnerModal } from '@/components/demo/DemoRunnerModal';
 import { useTheme } from '@/components/theme/ThemeProvider';
+import { useMarket } from '@/components/market/MarketContext';
 import { playSound } from '@/lib/sound';
 
 export default function LandingPage() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t, speak, isSpeaking, stopVoice, exchangeRate } = useMarket();
+
+  const handleHeroSpeech = () => {
+    playSound('click');
+    if (isSpeaking) {
+      stopVoice();
+    } else {
+      const text =
+        language === 'pidgin'
+          ? 'Welcome to OLOWO! Autonomous finance operator for modern business and market trade. I dey watch your money 24/7, verify supplier waybills, pay permitted invoices on Arc, protect your shop rent, and ask for your approval before big money moves.'
+          : 'Welcome to OLOWO. Your autonomous AI finance operator. I monitor business transactions, verify vendor invoices, execute permitted USDC payments, protect your reserve floor, and request approval above your mandate.';
+      speak(text);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#08111F] text-[#0F172A] dark:text-white selection:bg-[#00A878]/20 selection:text-[#00A878] transition-colors duration-150">
@@ -53,7 +71,19 @@ export default function LandingPage() {
           <a href="#infrastructure" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">Circle & Arc</a>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Language Switcher */}
+          <button
+            onClick={() => {
+              playSound('toggle');
+              toggleLanguage();
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] text-xs font-semibold text-[#101828] dark:text-white hover:border-[#00A878] transition-all shadow-xs"
+          >
+            <Languages className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
+            <span>{language === 'pidgin' ? 'Pidgin 🇳🇬' : 'English 🇬🇧'}</span>
+          </button>
+
           {/* Theme Toggle */}
           <button
             onClick={() => {
@@ -95,36 +125,53 @@ export default function LandingPage() {
       <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto text-center space-y-8">
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs shadow-xs">
           <OlowoMascot state="OPERATING" size="sm" />
-          <span className="text-[#334155] dark:text-white font-medium">OLOWO watches the money. You run the business.</span>
+          <span className="text-[#334155] dark:text-white font-medium">{t.tagline}</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0F172A] dark:text-white max-w-4xl mx-auto leading-[1.08]">
-          Your AI Finance <span className="text-[#00A878] dark:text-[#35E0B2]">Operator.</span>
+          {language === 'pidgin' ? 'Your AI Money ' : 'Your AI Finance '}
+          <span className="text-[#00A878] dark:text-[#35E0B2]">Operator.</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#475569] dark:text-[#8896AB] max-w-2xl mx-auto leading-relaxed">
-          OLOWO monitors your business, verifies financial obligations, executes permitted USDC payments,
-          and asks for approval when decisions exceed your authority.
+          {t.subtagline}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <Link
             href="/dashboard"
-            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#00A878] hover:bg-[#009166] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] text-sm font-semibold shadow-md transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#00A878] hover:bg-[#009166] text-white text-sm font-semibold shadow-md transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
           >
             <span>Launch OLOWO</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
 
           <button
+            onClick={handleHeroSpeech}
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-medium text-[#1E293B] dark:text-white transition-all flex items-center justify-center gap-2 shadow-xs"
+          >
+            {isSpeaking ? (
+              <>
+                <VolumeX className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Stop Man Voice</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Listen with Man Voice</span>
+              </>
+            )}
+          </button>
+
+          <button
             onClick={() => {
               playSound('click');
               setIsDemoOpen(true);
             }}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-medium text-[#1E293B] dark:text-white transition-all flex items-center justify-center gap-2 shadow-xs"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-medium text-[#1E293B] dark:text-white transition-all flex items-center justify-center gap-2 shadow-xs"
           >
             <Play className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2] fill-current" />
-            <span>Watch the Demo (2 Min)</span>
+            <span>Interactive Demo</span>
           </button>
         </div>
 
@@ -140,7 +187,7 @@ export default function LandingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 dark:bg-[#35E0B2]/10 border border-[#00A878]/20 dark:border-[#35E0B2]/30 px-2 py-0.5 rounded font-semibold">
-                  ● AUTONOMOUS OPERATIONS ACTIVE
+                  ● {language === 'pidgin' ? 'OLOWO DEY WATCH THE MONEY' : 'AUTONOMOUS OPERATIONS ACTIVE'}
                 </span>
               </div>
             </div>
@@ -148,20 +195,35 @@ export default function LandingPage() {
             {/* Quick Metrics Teaser */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">TREASURY</div>
+                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
+                  {language === 'pidgin' ? 'TOTAL MONEY' : 'TREASURY'}
+                </div>
                 <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$12,400 <span className="text-xs text-[#00A878] dark:text-[#35E0B2]">USDC</span></div>
+                <div className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] font-semibold mt-0.5">~₦18.6M Naira</div>
               </div>
+
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">AVAILABLE</div>
+                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
+                  {language === 'pidgin' ? 'FREE TO SPEND' : 'AVAILABLE'}
+                </div>
                 <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$6,550 <span className="text-xs text-[#3B66F5] dark:text-[#4D7CFE]">USDC</span></div>
+                <div className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] font-semibold mt-0.5">~₦9.82M Naira</div>
               </div>
+
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">RESERVED</div>
+                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
+                  {language === 'pidgin' ? 'SHOP RENT (LOCKED)' : 'RESERVED'}
+                </div>
                 <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$5,850 <span className="text-xs text-[#F59E0B] dark:text-[#F5B942]">USDC</span></div>
+                <div className="text-xs font-mono text-[#F59E0B] dark:text-[#F5B942] font-semibold mt-0.5">~₦8.77M Naira</div>
               </div>
+
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#FDE68A] dark:border-[#F5B942]/30">
-                <div className="text-[11px] font-mono text-[#B45309] dark:text-[#F5B942]">AWAITING APPROVAL</div>
-                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">2 <span className="text-xs text-[#64748B] dark:text-[#8896AB]">Invoices</span></div>
+                <div className="text-[11px] font-mono text-[#B45309] dark:text-[#F5B942]">
+                  {language === 'pidgin' ? 'NEEDS YOUR SAY' : 'AWAITING APPROVAL'}
+                </div>
+                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">2 <span className="text-xs text-[#64748B] dark:text-[#8896AB]">Bills</span></div>
+                <div className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] font-semibold mt-0.5">Exceeds limit</div>
               </div>
             </div>
 

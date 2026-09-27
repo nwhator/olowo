@@ -12,40 +12,59 @@ import {
   Terminal,
   ExternalLink,
   Loader2,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { OperatorChatMessage, MascotState } from '@/types';
 import { playClickSound, playPaymentSuccessSound } from '@/lib/sound';
+import { useMarket } from '@/components/market/MarketContext';
 
 interface OperatorChatProps {
   mascotState?: MascotState;
 }
 
 export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
+  const { language, t, isSpeaking, speak, stopVoice } = useMarket();
+
+  const initialWelcomeText =
+    language === 'pidgin'
+      ? 'Good afternoon Madam/Oga! I be OLOWO, your autonomous financial operator. I dey monitor your money 24/7: invoices dey verified, suppliers dey checked, and your $5,000 shop rent reserve dey locked sharp-sharp. Wetyn you wan make I check for you?'
+      : 'Good afternoon. I am OLOWO, your autonomous financial operator. I continuously monitor financial activity: invoices are verified, counterparties are screened, and your $5,000 reserve floor is protected. How can I assist you?';
+
   const [messages, setMessages] = useState<OperatorChatMessage[]>([
     {
       id: 'm_welcome',
       sender: 'olowo',
-      text: 'Good afternoon. I am continuously operating your financial mandate for AfriCode Labs. Invoices are being verified, critical obligations are ring-fenced, and reserve policies are enforced. How can I assist you?',
+      text: initialWelcomeText,
       timestamp: 'Just now',
       toolsUsed: ['getTreasury()', 'getPolicies()'],
       verifiedFacts: [
-        'Treasury: $12,400 USDC',
-        'Operating Reserve Floor: $5,000 USDC',
-        'Autonomous Limit: $1,000 USDC',
+        'Total Treasury: $12,400 USDC (~₦18,600,000)',
+        'Shop Rent & Operating Reserve: $5,000 USDC (~₦7,500,000) [LOCKED]',
+        'Autonomous Payment Limit: $1,000 USDC (~₦1,500,000)',
       ],
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const suggestedQuestions = [
-    'Why did you pay ABC Design?',
-    'What payments are due this week?',
-    'How much can I safely spend?',
-    'Why was invoice #1043 blocked?',
-    'What happens if I approve this payment?',
-  ];
+  const suggestedQuestions =
+    language === 'pidgin'
+      ? [
+          'Why you pay Alhaji for rice?',
+          'How much money I fit spend today?',
+          'Which bills dey due this week?',
+          'Why you block that double receipt?',
+          'Wetyn go happen if I approve Mama Chinedu lace?',
+        ]
+      : [
+          'Why did you pay ABC Design?',
+          'What payments are due this week?',
+          'How much can I safely spend?',
+          'Why was invoice #1043 blocked?',
+          'What happens if I approve this payment?',
+        ];
 
   async function handleSend(queryText: string) {
     const q = queryText.trim();
@@ -68,14 +87,14 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
       const res = await fetch('/api/operator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: q }),
+        body: JSON.stringify({ query: q, language }),
       });
       const data = await res.json();
 
       const olowoMsg: OperatorChatMessage = {
         id: `o_${Date.now()}`,
         sender: 'olowo',
-        text: data.answer || 'I evaluated your request against current business policies and state.',
+        text: data.answer || (language === 'pidgin' ? 'I don evaluate your request against your company rules.' : 'I evaluated your request against current business policies and state.'),
         timestamp: 'Just now',
         toolsUsed: data.toolsUsed,
         verifiedFacts: data.verifiedFacts,
@@ -90,7 +109,7 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
         {
           id: `err_${Date.now()}`,
           sender: 'olowo',
-          text: 'Encountered an issue querying system state. Please check local connectivity.',
+          text: language === 'pidgin' ? 'Network get small delay, abeg try again.' : 'Encountered an issue querying system state. Please check connectivity.',
           timestamp: 'Just now',
         },
       ]);
@@ -108,12 +127,14 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
           <div>
             <h3 className="text-sm font-bold text-[#101828] dark:text-white tracking-tight flex items-center gap-2">
               OLOWO Intelligent Operator
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#00A878]/10 text-[#00A878] dark:bg-[#35E0B2]/10 dark:text-[#35E0B2] border border-[#00A878]/30 dark:border-[#35E0B2]/30 font-semibold">
-                POLICY GROUNDED
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00A878]/10 text-[#00A878] dark:bg-[#35E0B2]/10 dark:text-[#35E0B2] border border-[#00A878]/30 dark:border-[#35E0B2]/30 font-semibold">
+                {language === 'pidgin' ? 'PIDGIN VOICE ACTIVE' : 'SIMPLE ENGLISH'}
               </span>
             </h3>
             <p className="text-[11px] text-[#64748B] dark:text-[#8896AB]">
-              Answers synthesized directly from verified database records and mandate rules
+              {language === 'pidgin'
+                ? 'Answers grounded directly for your real shop money, bills, and mandate'
+                : 'Answers synthesized directly from verified database records and mandate rules'}
             </p>
           </div>
         </div>
@@ -126,7 +147,9 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
 
       {/* Suggested Questions Pills */}
       <div className="px-6 py-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]/60 bg-[#F8FAFC] dark:bg-[#0A1424] flex items-center gap-2 overflow-x-auto">
-        <span className="text-[11px] font-mono text-[#94A3B8] dark:text-[#5E6E85] shrink-0 font-semibold">SUGGESTED:</span>
+        <span className="text-[11px] font-mono text-[#94A3B8] dark:text-[#5E6E85] shrink-0 font-semibold">
+          {language === 'pidgin' ? 'ASK ME:' : 'SUGGESTED:'}
+        </span>
         {suggestedQuestions.map((sq, i) => (
           <button
             key={i}
@@ -177,51 +200,68 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
                 </div>
               )}
 
-              {/* Tools invoked badge */}
-              {m.toolsUsed && m.toolsUsed.length > 0 && (
-                <div className="pt-1 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-[#94A3B8] dark:text-[#5E6E85] font-semibold">TOOLS:</span>
-                  {m.toolsUsed.map((tool, idx) => (
-                    <span
-                      key={idx}
-                      className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-[#12223B] text-[#2563EB] dark:text-[#4D7CFE] border border-[#E2E8F0] dark:border-[#1A2D4C]"
-                    >
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-              )}
+              {/* Tools & Audio controls for Olowo messages */}
+              {m.sender === 'olowo' && (
+                <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 text-[10px] text-[#94A3B8] dark:text-[#5E6E85]">
+                  <div className="flex items-center gap-1.5">
+                    {m.toolsUsed?.map((tName, i) => (
+                      <span key={i} className="font-mono bg-white dark:bg-[#12223B] px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-[#1A2D4C]">
+                        {tName}
+                      </span>
+                    ))}
+                  </div>
 
-              {m.relatedActionUrl && (
-                <div className="pt-2">
-                  <Link
-                    href={m.relatedActionUrl}
-                    className="inline-flex items-center gap-1 text-xs text-[#00A878] dark:text-[#35E0B2] hover:underline font-semibold"
-                  >
-                    <span>Inspect Record in UI</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    {/* Speaker Readout Button */}
+                    <button
+                      onClick={() => {
+                        playClickSound();
+                        if (isSpeaking) {
+                          stopVoice();
+                        } else {
+                          speak(m.text);
+                        }
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[10px] font-semibold text-[#00A878] dark:text-[#35E0B2] hover:bg-[#F1F5F9] dark:hover:bg-[#1A2D4C] transition-colors"
+                    >
+                      {isSpeaking ? (
+                        <>
+                          <VolumeX className="w-3 h-3" />
+                          <span>Stop Voice</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3 h-3" />
+                          <span>Listen (Man Voice)</span>
+                        </>
+                      )}
+                    </button>
+
+                    {m.relatedActionUrl && (
+                      <Link
+                        href={m.relatedActionUrl}
+                        className="inline-flex items-center gap-1 text-[#2563EB] dark:text-[#4D7CFE] hover:underline font-semibold"
+                      >
+                        <span>Action</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
-
-            {m.sender === 'user' && (
-              <div className="p-2 rounded-xl bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[#64748B] shrink-0 mt-1 shadow-2xs">
-                <User className="w-4 h-4" />
-              </div>
-            )}
           </div>
         ))}
 
         {isLoading && (
-          <div className="flex items-center gap-3 text-xs text-[#64748B] dark:text-[#8896AB] pl-2">
+          <div className="flex items-center gap-3 text-xs text-[#64748B] dark:text-[#8896AB] pl-2 font-mono">
             <Loader2 className="w-4 h-4 animate-spin text-[#00A878] dark:text-[#35E0B2]" />
-            <span className="font-mono text-[11px]">OLOWO is evaluating policies and database state...</span>
+            <span>{language === 'pidgin' ? 'OLOWO dey calculate your mandate & blockchain state...' : 'Evaluating mandate rules & querying state...'}</span>
           </div>
         )}
       </div>
 
-      {/* Input Field */}
+      {/* Input Form */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -233,15 +273,17 @@ export function OperatorChat({ mascotState = 'OPERATING' }: OperatorChatProps) {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask OLOWO about your business..."
+          placeholder={language === 'pidgin' ? 'Ask OLOWO anything (e.g., "Why you pay Alhaji for rice?", "How much I fit spend?")...' : 'Ask OLOWO about payments, mandate rules, runway, or decisions...'}
           className="flex-1 px-4 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs text-[#101828] dark:text-white placeholder-[#94A3B8] dark:placeholder-[#5E6E85] focus:outline-none focus:border-[#00A878] dark:focus:border-[#35E0B2] transition-colors"
         />
+
         <button
           type="submit"
           disabled={!input.trim() || isLoading}
-          className="p-2.5 rounded-xl bg-[#00A878] hover:bg-[#008f66] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+          className="px-4 py-2.5 rounded-xl bg-[#00A878] hover:bg-[#008f66] text-white text-xs font-semibold shadow-xs transition-all disabled:opacity-40 flex items-center gap-1.5"
         >
-          <Send className="w-4 h-4" />
+          <span>{language === 'pidgin' ? 'Send' : 'Ask'}</span>
+          <Send className="w-3.5 h-3.5" />
         </button>
       </form>
     </div>

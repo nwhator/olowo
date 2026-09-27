@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { MarketProvider } from '@/components/market/MarketContext';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -54,7 +55,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#F7F8FA] dark:bg-[#08111F] text-[#101828] dark:text-white transition-colors duration-150">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <MarketProvider>{children}</MarketProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
