@@ -16,6 +16,7 @@ import {
   Volume2,
   VolumeX,
   Languages,
+  Menu,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { MascotState } from '@/types';
@@ -32,6 +33,7 @@ interface AppHeaderProps {
   onResetData?: () => void;
   isResetting?: boolean;
   onStateRefreshed?: () => void;
+  onToggleMobileNav?: () => void;
 }
 
 export function AppHeader({
@@ -42,6 +44,7 @@ export function AppHeader({
   onResetData,
   isResetting = false,
   onStateRefreshed,
+  onToggleMobileNav,
 }: AppHeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t, isSpeaking, speak, stopVoice } = useMarket();
@@ -72,22 +75,34 @@ export function AppHeader({
         }}
       />
 
-      <header className="h-16 border-b border-[#E2E8F0] dark:border-[#1A2D4C] bg-white/95 dark:bg-[#08111F]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
-        {/* Title & Subtitle */}
-        <div className="flex flex-col">
-          <div className="flex items-center gap-3">
-            <h1 className="text-base font-bold text-[#101828] dark:text-white tracking-tight">
-              {title}
-            </h1>
-            <span className="hidden sm:inline-block h-3 w-px bg-[#E2E8F0] dark:bg-[#1A2D4C]" />
-            <span className="text-xs text-[#64748B] dark:text-[#8896AB] hidden sm:inline">
-              {displaySubtitle}
-            </span>
+      <header className="h-16 border-b border-[#E2E8F0] dark:border-[#1A2D4C] bg-white/95 dark:bg-[#08111F]/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
+        {/* Left: Mobile hamburger + Title & Subtitle */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          {onToggleMobileNav && (
+            <button
+              onClick={onToggleMobileNav}
+              className="md:hidden p-2 -ml-1 rounded-xl text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] transition-colors"
+              title="Open navigation menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h1 className="text-sm sm:text-base font-bold text-[#101828] dark:text-white tracking-tight truncate">
+                {title}
+              </h1>
+              <span className="hidden sm:inline-block h-3 w-px bg-[#E2E8F0] dark:bg-[#1A2D4C]" />
+              <span className="text-xs text-[#64748B] dark:text-[#8896AB] hidden sm:inline truncate max-w-[200px] lg:max-w-none">
+                {displaySubtitle}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Actions & Live Market Controls */}
-        <div className="flex items-center gap-2">
+        {/* Right Actions & Live Market Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Dual Currency Rate Ticker */}
           <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#64748B] dark:text-[#8896AB] shadow-2xs">
             <span className="text-[#00A878] dark:text-[#35E0B2] font-bold">1 USDC</span>
@@ -102,17 +117,18 @@ export function AppHeader({
               toggleLanguage();
             }}
             title={language === 'pidgin' ? 'Switch to Simple English' : 'Switch to Nigerian Pidgin'}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-[#F8FAFC] dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] text-xs font-semibold text-[#101828] dark:text-white transition-all shadow-2xs"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-[#F8FAFC] dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] text-xs font-semibold text-[#101828] dark:text-white transition-all shadow-2xs"
           >
             <Languages className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
-            <span>{language === 'pidgin' ? 'Pidgin 🇳🇬' : 'Simple English 🇬🇧'}</span>
+            <span className="hidden sm:inline">{language === 'pidgin' ? 'Pidgin 🇳🇬' : 'Simple English 🇬🇧'}</span>
+            <span className="sm:hidden font-mono text-[11px]">{language === 'pidgin' ? '🇳🇬' : '🇬🇧'}</span>
           </button>
 
           {/* Man Voice Speaker Button */}
           <button
             onClick={handleVoiceReadout}
             title={isSpeaking ? 'Stop Man Voice' : 'Listen with Man Voice'}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-2xs ${
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-2xs ${
               isSpeaking
                 ? 'bg-[#00A878]/15 border-[#00A878] text-[#00A878] dark:text-[#35E0B2] animate-pulse'
                 : 'bg-white dark:bg-[#0D192C] border-[#E2E8F0] dark:border-[#1A2D4C] text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white'
@@ -121,12 +137,12 @@ export function AppHeader({
             {isSpeaking ? (
               <>
                 <VolumeX className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
-                <span className="hidden md:inline">{t.stopVoice}</span>
+                <span className="hidden sm:inline">{t.stopVoice}</span>
               </>
             ) : (
               <>
                 <Volume2 className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
-                <span className="hidden md:inline">Man Voice</span>
+                <span className="hidden sm:inline">Man Voice</span>
               </>
             )}
           </button>
@@ -137,10 +153,12 @@ export function AppHeader({
               playSound('click');
               setIsUploadOpen(true);
             }}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F1F5F9] hover:bg-[#E2E8F0] dark:bg-[#0D192C] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-semibold text-[#344054] dark:text-white transition-all shadow-xs"
+            title={t.processInvoiceBtn}
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#00A878] text-white hover:bg-[#009166] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] dark:text-[#08111F] border border-transparent text-xs font-semibold transition-all shadow-xs"
           >
-            <FileUp className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
-            <span>{t.processInvoiceBtn}</span>
+            <FileUp className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{t.processInvoiceBtn}</span>
+            <span className="sm:hidden text-xs">Scan</span>
           </button>
 
           {/* Theme Toggle (Light / Dark) */}
@@ -150,7 +168,7 @@ export function AppHeader({
               toggleTheme();
             }}
             title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} theme`}
-            className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] hover:bg-[#F8FAFC] dark:hover:bg-[#12223B] text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs"
+            className="p-1.5 sm:p-2 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] hover:bg-[#F8FAFC] dark:hover:bg-[#12223B] text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs"
           >
             {theme === 'light' ? (
               <Moon className="w-4 h-4 text-[#475467]" />
@@ -159,7 +177,22 @@ export function AppHeader({
             )}
           </button>
 
-          {/* Reset State Button */}
+          {/* Scripted Hackathon Interactive Demo Button */}
+          {onRunDemo && (
+            <button
+              onClick={() => {
+                playSound('click');
+                onRunDemo();
+              }}
+              title="Run 6-Step Scripted Hackathon Demo"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-semibold text-[#344054] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs"
+            >
+              <Play className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2] fill-current" />
+              <span>Interactive Demo</span>
+            </button>
+          )}
+
+          {/* Reset Demo State Button */}
           {onResetData && (
             <button
               onClick={() => {
@@ -167,32 +200,13 @@ export function AppHeader({
                 onResetData();
               }}
               disabled={isResetting}
-              title="Reset storage to initial clean seed state"
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] hover:bg-[#F8FAFC] dark:hover:bg-[#12223B] text-xs font-medium text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white transition-all disabled:opacity-50"
+              title="Reset data back to seed state"
+              className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-medium text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white transition-all shadow-2xs disabled:opacity-50"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
-              <span>Reset</span>
+              <span>Reset State</span>
             </button>
           )}
-
-          {/* Run Demo Button */}
-          {onRunDemo && (
-            <button
-              onClick={() => {
-                playSound('click');
-                onRunDemo();
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#00A878] hover:bg-[#008f66] text-white text-xs font-semibold shadow-xs transition-all transform hover:scale-[1.02]"
-            >
-              <Play className="w-3 h-3 fill-current" />
-              <span>Run Demo</span>
-            </button>
-          )}
-
-          {/* Mascot Micro-widget */}
-          <Link href="/operator" className="ml-1">
-            <OlowoMascot state={mascotState} size="sm" />
-          </Link>
         </div>
       </header>
     </>

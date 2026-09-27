@@ -17,6 +17,7 @@ import {
   Settings,
   Sparkles,
   Languages,
+  X,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { MascotState } from '@/types';
@@ -27,6 +28,8 @@ interface AppSidebarProps {
   mascotState?: MascotState;
   pendingApprovalsCount?: number;
   isPaused?: boolean;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 interface NavItem {
@@ -47,6 +50,8 @@ export function AppSidebar({
   mascotState = 'OPERATING',
   pendingApprovalsCount = 2,
   isPaused = false,
+  isMobileOpen = false,
+  onCloseMobile,
 }: AppSidebarProps) {
   const pathname = usePathname();
   const { language, toggleLanguage, t } = useMarket();
@@ -103,16 +108,16 @@ export function AppSidebar({
       ],
     },
     {
-      title: isPidgin ? 'AI & MANDATE' : 'INTELLIGENCE',
+      title: isPidgin ? 'AI OPERATOR' : 'INTELLIGENCE',
       items: [
         {
-          label: 'OLOWO Operator',
+          label: 'OLOWO Chat',
           href: '/operator',
           icon: Bot,
           highlight: true,
         },
         {
-          label: isPidgin ? 'Rules & Limits' : 'Mandate',
+          label: isPidgin ? 'Mandate Rules' : 'Mandate',
           href: '/mandate',
           icon: Sliders,
         },
@@ -124,18 +129,26 @@ export function AppSidebar({
       ],
     },
     {
-      title: 'SYSTEM',
+      title: isPidgin ? 'SYSTEM' : 'SYSTEM',
       items: [
-        { label: 'Settings', href: '/settings', icon: Settings },
+        {
+          label: isPidgin ? 'Shop Settings' : 'Settings',
+          href: '/settings',
+          icon: Settings,
+        },
       ],
     },
   ];
 
-  return (
-    <aside className="w-64 bg-white dark:bg-[#08111F] border-r border-[#E2E8F0] dark:border-[#1A2D4C] flex flex-col shrink-0 min-h-screen transition-colors">
+  const sidebarInner = (
+    <div className="flex flex-col h-full bg-white dark:bg-[#08111F] select-none">
       {/* Brand Header */}
-      <div className="p-5 border-b border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
+      <div className="p-4 sm:p-5 border-b border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between">
+        <Link
+          href="/dashboard"
+          onClick={() => onCloseMobile && onCloseMobile()}
+          className="flex items-center gap-3 group"
+        >
           <OlowoMascot state={isPaused ? 'BLOCKED' : mascotState} size="sm" />
           <div className="flex flex-col">
             <span className="font-bold tracking-tight text-[#101828] dark:text-white text-lg flex items-center gap-1.5">
@@ -149,14 +162,24 @@ export function AppSidebar({
             </span>
           </div>
         </Link>
+
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="md:hidden p-1.5 rounded-xl text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] transition-colors"
+            title="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Nav Link Groups */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
         {navSections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             {section.title && (
-              <div className="px-3 text-[10px] font-mono font-bold text-[#94A3B8] dark:text-[#5E6E85] tracking-wider uppercase mb-2">
+              <div className="px-3 text-[10px] font-mono font-bold text-[#94A3B8] dark:text-[#5E6E85] tracking-wider uppercase mb-1.5">
                 {section.title}
               </div>
             )}
@@ -170,6 +193,7 @@ export function AppSidebar({
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={() => onCloseMobile && onCloseMobile()}
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                       isActive
                         ? 'bg-[#F1F5F9] dark:bg-[#12223B] text-[#101828] dark:text-white font-semibold shadow-2xs border border-[#E2E8F0] dark:border-[#1A2D4C]'
@@ -224,6 +248,30 @@ export function AppSidebar({
           {t.tagline}
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden md:flex w-64 bg-white dark:bg-[#08111F] border-r border-[#E2E8F0] dark:border-[#1A2D4C] flex-col shrink-0 min-h-screen transition-colors">
+        {sidebarInner}
+      </aside>
+
+      {/* Mobile Drawer Overlay */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={onCloseMobile}
+          />
+          {/* Drawer container */}
+          <aside className="relative w-72 max-w-[85vw] h-full z-10 shadow-2xl border-r border-[#E2E8F0] dark:border-[#1A2D4C]">
+            {sidebarInner}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

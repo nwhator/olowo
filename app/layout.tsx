@@ -54,7 +54,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F7F8FA] dark:bg-[#08111F] text-[#101828] dark:text-white transition-colors duration-150">
+      <body className="min-h-screen w-full overflow-x-hidden flex flex-col bg-[#F7F8FA] dark:bg-[#08111F] text-[#101828] dark:text-white transition-colors duration-150">
         <ThemeProvider>
           <MarketProvider>{children}</MarketProvider>
         </ThemeProvider>
