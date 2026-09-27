@@ -61,7 +61,7 @@ export function AppHeader({
         language === 'pidgin'
           ? 'OLOWO dey watch the money! Everything dey waka normal within your rules. Your twelve thousand four hundred dollars treasury dey safe, and five thousand dollars shop rent money dey locked. Two invoices dey wait for your approval.'
           : 'OLOWO is actively watching the money. All operations are normal within your rules. Your treasury balance of twelve thousand four hundred dollars is safe, with five thousand dollars reserved for shop rent and obligations. Two invoices await your approval.';
-      speak(speechSummary);
+      speak(speechSummary, 'briefing');
     }
   };
 

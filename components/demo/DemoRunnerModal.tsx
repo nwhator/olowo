@@ -13,9 +13,13 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
+  Volume2,
+  VolumeX,
+  Sparkles,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { DEMO_STEPS, DemoStep } from '@/lib/demo/steps';
+import { useMarket } from '@/components/market/MarketContext';
 
 interface DemoRunnerModalProps {
   isOpen: boolean;
@@ -28,6 +32,7 @@ export function DemoRunnerModal({
   onClose,
   onStateChanged,
 }: DemoRunnerModalProps) {
+  const { persona, togglePersona, language, speak, stopVoice, isSpeaking } = useMarket();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -90,22 +95,51 @@ export function DemoRunnerModal({
     }
   }
 
+  const isMarket = persona === 'market';
+  const stepTitle = isMarket && currentStep.marketTitle ? currentStep.marketTitle : currentStep.title;
+  const stepTagline = isMarket && currentStep.marketTagline ? currentStep.marketTagline : currentStep.tagline;
+  const stepDescription = isMarket && currentStep.marketDescription ? currentStep.marketDescription : currentStep.description;
+  const stepMessage = isMarket && currentStep.marketMascotMessage ? currentStep.marketMascotMessage : currentStep.mascotMessage;
+
+  const handleClose = () => {
+    stopVoice();
+    onClose();
+  };
+
+  const handleVoicePlay = () => {
+    if (isSpeaking) {
+      stopVoice();
+    } else {
+      speak(stepMessage, currentStep.audioClipKey);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="w-full max-w-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] rounded-2xl shadow-2xl overflow-hidden flex flex-col text-[#101828] dark:text-white transition-colors">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between bg-[#F8FAFC] dark:bg-[#08111F]">
-          <div className="flex items-center gap-3">
+        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between bg-[#F8FAFC] dark:bg-[#08111F] gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-[#00A878]/10 text-[#00A878] dark:bg-[#35E0B2]/10 dark:text-[#35E0B2] border border-[#00A878]/30 dark:border-[#35E0B2]/30">
               SCRIPTED HACKATHON DEMO
             </span>
             <span className="text-xs text-[#64748B] dark:text-[#8896AB]">
               Step {currentStepIndex + 1} of {DEMO_STEPS.length}
             </span>
+
+            {/* Persona Switcher */}
+            <button
+              onClick={togglePersona}
+              className="px-2 py-0.5 rounded text-[10px] font-semibold border flex items-center gap-1 transition-all bg-white dark:bg-[#12223B] text-[#101828] dark:text-white border-[#E2E8F0] dark:border-[#1A2D4C] hover:border-[#00A878]"
+              title="Toggle between Market Trader and Enterprise persona"
+            >
+              <Sparkles className="w-3 h-3 text-[#D97706] dark:text-[#F5B942]" />
+              <span>{persona === 'market' ? '🛒 Market Trader' : '🏢 Enterprise'}</span>
+            </button>
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white transition-colors p-1 rounded-lg hover:bg-[#F1F5F9] dark:hover:bg-[#12223B]"
           >
             <X className="w-5 h-5" />
@@ -126,32 +160,48 @@ export function DemoRunnerModal({
           <div className="flex items-start justify-between gap-4">
             <div>
               <span className="text-xs font-mono font-medium text-[#2563EB] dark:text-[#4D7CFE] uppercase tracking-wider">
-                Event {currentStep.stepNumber} • {currentStep.tagline}
+                Event {currentStep.stepNumber} • {stepTagline}
               </span>
-              <h2 className="text-xl font-bold text-[#101828] dark:text-white mt-1">{currentStep.title}</h2>
+              <h2 className="text-xl font-bold text-[#101828] dark:text-white mt-1">{stepTitle}</h2>
             </div>
 
-            <span className="px-3 py-1 rounded-full text-xs font-mono font-medium border bg-[#F8FAFC] dark:bg-[#12223B] text-[#00A878] dark:text-[#35E0B2] border-[#00A878]/30 dark:border-[#35E0B2]/30">
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-medium border bg-[#F8FAFC] dark:bg-[#12223B] text-[#00A878] dark:text-[#35E0B2] border-[#00A878]/30 dark:border-[#35E0B2]/30 shrink-0">
               {currentStep.details.statusBadge}
             </span>
           </div>
 
-          {/* Mascot Voice Box */}
-          <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center gap-4">
-            <OlowoMascot state={currentStep.mascotState} size="lg" />
-            <div className="flex-1">
-              <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB] uppercase tracking-wider mb-1">
-                OLOWO OPERATOR VOICE
+          {/* Mascot Voice Box with Human Voice Audio Trigger */}
+          <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <OlowoMascot state={currentStep.mascotState} size="lg" />
+              <div className="min-w-0">
+                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <span>OLOWO HUMAN VOICE</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00A878] animate-ping" />
+                </div>
+                <p className="text-sm font-medium text-[#101828] dark:text-white italic">
+                  &ldquo;{stepMessage}&rdquo;
+                </p>
               </div>
-              <p className="text-sm font-medium text-[#101828] dark:text-white italic">
-                &ldquo;{currentStep.mascotMessage}&rdquo;
-              </p>
             </div>
+
+            <button
+              onClick={handleVoicePlay}
+              className={`px-3 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all shrink-0 shadow-sm ${
+                isSpeaking
+                  ? 'bg-[#00A878] text-white border-[#00A878] animate-pulse'
+                  : 'bg-white dark:bg-[#12223B] text-[#00A878] dark:text-[#35E0B2] border-[#00A878]/30 dark:border-[#35E0B2]/30 hover:bg-[#00A878]/10'
+              }`}
+              title="Listen with authentic Nigerian human voice"
+            >
+              {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              <span className="hidden sm:inline">{isSpeaking ? 'Mute Voice' : 'Listen Voice'}</span>
+            </button>
           </div>
 
           {/* Description */}
           <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-            {currentStep.description}
+            {stepDescription}
           </p>
 
           {/* Live Data Attributes */}
@@ -171,7 +221,10 @@ export function DemoRunnerModal({
         <div className="px-6 py-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] bg-[#F8FAFC] dark:bg-[#08111F] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <button
-              onClick={handleReset}
+              onClick={() => {
+                stopVoice();
+                handleReset();
+              }}
               disabled={isExecuting}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] text-xs font-medium text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white transition-all disabled:opacity-50"
             >

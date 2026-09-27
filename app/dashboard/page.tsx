@@ -6,6 +6,7 @@ import { TreasuryMetricCards } from '@/components/dashboard/TreasuryMetricCards'
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
 import { ForecastSummaryCard } from '@/components/dashboard/ForecastSummaryCard';
 import { RecentOperationsTable } from '@/components/dashboard/RecentOperationsTable';
+import { MarketTraderHub } from '@/components/dashboard/MarketTraderHub';
 import { Treasury, ActivityFeedItem, Invoice } from '@/types';
 import { ForecastReport } from '@/lib/treasury/forecast';
 import { Loader2 } from 'lucide-react';
@@ -120,6 +121,9 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="space-y-8">
+          {/* Market Trader Action Center */}
+          <MarketTraderHub onRefresh={loadData} />
+
           {/* Section 19: Metric Cards */}
           <TreasuryMetricCards
             treasury={treasury}

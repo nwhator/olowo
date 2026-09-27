@@ -51,7 +51,7 @@ export default function LandingPage() {
         language === 'pidgin'
           ? 'Welcome to OLOWO! Autonomous finance operator for African market women and modern businesses. I dey watch your money 24/7: I verify paper waybills, stop double-billing fraud, pay your suppliers sharp-sharp on Arc in USDC, lock your shop rent reserve, and call you before big money moves.'
           : 'Welcome to OLOWO. The autonomous AI finance operator built for African market traders and modern businesses. We verify paper waybills, prevent duplicate invoice fraud, settle approved supplier payments on Arc in USDC, safeguard your shop rent reserve, and escalate large decisions for human sign-off.';
-      speak(text);
+      speak(text, 'welcome');
     }
   };
 

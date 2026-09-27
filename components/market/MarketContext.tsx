@@ -16,7 +16,7 @@ interface MarketContextType {
   togglePersona: () => void;
   exchangeRate: number;
   isSpeaking: boolean;
-  speak: (text: string) => void;
+  speak: (text: string, clipKey?: string) => void;
   stopVoice: () => void;
 }
 
@@ -83,11 +83,16 @@ export function MarketProvider({ children }: { children: React.ReactNode }) {
     setPersona(next);
   };
 
-  const speak = (text: string) => {
+  const speak = (text: string, clipKey?: string) => {
     setSpeaking(true);
-    speakText(text, () => {
-      setSpeaking(false);
-    });
+    speakText(
+      text,
+      () => {
+        setSpeaking(false);
+      },
+      clipKey,
+      language
+    );
   };
 
   const stopVoice = () => {

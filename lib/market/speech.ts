@@ -1,15 +1,17 @@
 /**
- * Ultra-Natural Voice Synthesizer for OLOWO.
- * Provides authentic, high-clarity spoken readouts in Nigerian Pidgin or Simple English
- * using phonetic tuning, West African cadence mapping, and preferred male neural voices.
+ * Ultra-Natural Human Voice Engine for OLOWO.
+ * Supports:
+ * 1. Authentic Studio Neural Human Voice Clips (en-NG-AbeoNeural studio recordings)
+ * 2. Web Speech API with West African phonetic cadence tuning
+ * 3. Two-tone acoustic announcer chime before spoken alerts
  */
 
 let synth: SpeechSynthesis | null = null;
 let cachedVoices: SpeechSynthesisVoice[] = [];
+let currentAudioElement: HTMLAudioElement | null = null;
 
 if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
   synth = window.speechSynthesis;
-  // Pre-load voices and handle async population
   if (synth.onvoiceschanged !== undefined) {
     synth.onvoiceschanged = () => {
       cachedVoices = synth?.getVoices() || [];
@@ -18,12 +20,45 @@ if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 }
 
 /**
+ * Pre-recorded studio neural human voice clips generated with en-NG-AbeoNeural.
+ * Provides 100% authentic human West African male voice playback.
+ */
+export const STUDIO_AUDIO_MAP: Record<string, { pidgin: string; simple_english: string }> = {
+  welcome: {
+    pidgin: '/audio/welcome_pidgin.mp3',
+    simple_english: '/audio/welcome_english.mp3',
+  },
+  briefing: {
+    pidgin: '/audio/briefing_pidgin.mp3',
+    simple_english: '/audio/briefing_english.mp3',
+  },
+  rice_paid: {
+    pidgin: '/audio/rice_paid_pidgin.mp3',
+    simple_english: '/audio/rice_paid_english.mp3',
+  },
+  double_bill_blocked: {
+    pidgin: '/audio/double_bill_blocked_pidgin.mp3',
+    simple_english: '/audio/double_bill_blocked_english.mp3',
+  },
+  haulage_exceeded: {
+    pidgin: '/audio/haulage_exceeded_pidgin.mp3',
+    simple_english: '/audio/haulage_exceeded_english.mp3',
+  },
+  rent_safe: {
+    pidgin: '/audio/rent_safe_pidgin.mp3',
+    simple_english: '/audio/rent_safe_english.mp3',
+  },
+};
+
+/**
  * Play a gentle, professional operator chime before speaking.
  */
 function playOperatorAnnounceChime() {
   if (typeof window === 'undefined') return;
   try {
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AudioCtx) return;
     const ctx = new AudioCtx();
     const now = ctx.currentTime;
@@ -103,7 +138,7 @@ export function getMaleVoice(): SpeechSynthesisVoice | null {
   const voices = cachedVoices.length > 0 ? cachedVoices : synth.getVoices();
   if (!voices || voices.length === 0) return null;
 
-  // 1. First priority: Microsoft Abeo (Neural Nigerian Male) or any Nigerian English voice
+  // 1. Microsoft Abeo (Neural Nigerian Male) or any Nigerian English voice
   const ngMale = voices.find(
     (v) =>
       (v.lang === 'en-NG' || v.name.toLowerCase().includes('nigeria')) &&
@@ -113,17 +148,19 @@ export function getMaleVoice(): SpeechSynthesisVoice | null {
   );
   if (ngMale) return ngMale;
 
-  // 2. Second priority: Any Nigerian voice
+  // 2. Any Nigerian voice
   const anyNg = voices.find(
     (v) => v.lang === 'en-NG' || v.name.toLowerCase().includes('nigeria')
   );
   if (anyNg) return anyNg;
 
-  // 3. Third priority: British / Commonwealth Natural Male Voices
+  // 3. British / Commonwealth Natural Male Voices
   const preferredMale = voices.find(
     (v) =>
       (v.lang === 'en-GB' || v.lang === 'en-IE' || v.lang === 'en-ZA' || v.lang === 'en-US') &&
-      (v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('neural') || v.name.toLowerCase().includes('online')) &&
+      (v.name.toLowerCase().includes('natural') ||
+        v.name.toLowerCase().includes('neural') ||
+        v.name.toLowerCase().includes('online')) &&
       (v.name.toLowerCase().includes('ryan') ||
         v.name.toLowerCase().includes('guy') ||
         v.name.toLowerCase().includes('david') ||
@@ -152,23 +189,96 @@ export function getMaleVoice(): SpeechSynthesisVoice | null {
 }
 
 /**
- * Returns all detected voices so the user can inspect or select their preference.
+ * Attempts to detect a matched studio human audio clip from the given text or key.
  */
-export function getAllAvailableVoices(): SpeechSynthesisVoice[] {
-  if (!synth) return [];
-  return cachedVoices.length > 0 ? cachedVoices : synth.getVoices();
+function detectStudioAudioClip(
+  text: string,
+  clipKey?: string,
+  lang: 'pidgin' | 'simple_english' = 'pidgin'
+): string | null {
+  if (clipKey && STUDIO_AUDIO_MAP[clipKey]) {
+    return STUDIO_AUDIO_MAP[clipKey][lang];
+  }
+
+  const lower = text.toLowerCase();
+
+  if (lower.includes('welcome to olowo')) {
+    return STUDIO_AUDIO_MAP.welcome[lang];
+  }
+  if (lower.includes('everything dey waka normal') || lower.includes('actively watching the money')) {
+    return STUDIO_AUDIO_MAP.briefing[lang];
+  }
+  if (lower.includes('alhaji sani') && (lower.includes('480') || lower.includes('750') || lower.includes('rice'))) {
+    return STUDIO_AUDIO_MAP.rice_paid[lang];
+  }
+  if (lower.includes('double') || lower.includes('duplicate') || lower.includes('inv-1043')) {
+    return STUDIO_AUDIO_MAP.double_bill_blocked[lang];
+  }
+  if (lower.includes('cotonou') || lower.includes('1,400') || lower.includes('4,800') || lower.includes('pass your')) {
+    return STUDIO_AUDIO_MAP.haulage_exceeded[lang];
+  }
+  if (lower.includes('shop rent reserve') || lower.includes('untouchable reserve') || lower.includes('rent is locked')) {
+    return STUDIO_AUDIO_MAP.rent_safe[lang];
+  }
+
+  return null;
 }
 
 /**
- * Speaks text using the tuned male voice and phonetic Pidgin normalizer.
+ * Speaks text using authentic Studio Human Voice MP3 if available,
+ * or falls back to Web Speech synthesis with phonetic West African tuning.
  */
-export function speakText(text: string, onEnd?: () => void) {
-  if (typeof window === 'undefined' || !synth) return;
+export function speakText(
+  text: string,
+  onEnd?: () => void,
+  clipKey?: string,
+  language: 'pidgin' | 'simple_english' = 'pidgin'
+) {
+  if (typeof window === 'undefined') return;
+
+  // Stop any active speech or audio
+  stopSpeaking();
+  playOperatorAnnounceChime();
+
+  const studioClipUrl = detectStudioAudioClip(text, clipKey, language);
+
+  if (studioClipUrl) {
+    try {
+      const audio = new Audio(studioClipUrl);
+      currentAudioElement = audio;
+
+      audio.onended = () => {
+        currentAudioElement = null;
+        if (onEnd) onEnd();
+      };
+      audio.onerror = () => {
+        currentAudioElement = null;
+        // Fallback to speech synthesis if audio file cannot be loaded
+        fallbackSynthesize(text, onEnd);
+      };
+
+      setTimeout(() => {
+        audio.play().catch(() => {
+          fallbackSynthesize(text, onEnd);
+        });
+      }, 100);
+      return;
+    } catch {
+      fallbackSynthesize(text, onEnd);
+      return;
+    }
+  }
+
+  fallbackSynthesize(text, onEnd);
+}
+
+function fallbackSynthesize(text: string, onEnd?: () => void) {
+  if (!synth) {
+    if (onEnd) onEnd();
+    return;
+  }
 
   try {
-    synth.cancel(); // Stop any previous speech
-    playOperatorAnnounceChime();
-
     const tuned = phoneticPidginTune(text);
     const utterance = new SpeechSynthesisUtterance(tuned);
     const voice = getMaleVoice();
@@ -177,16 +287,14 @@ export function speakText(text: string, onEnd?: () => void) {
       utterance.voice = voice;
     }
 
-    // Friendly, clear market pace
-    utterance.rate = 0.94; // slightly slower cadence for high comprehensibility
-    utterance.pitch = 0.92; // warm, resonant male operator tone
+    utterance.rate = 0.94;
+    utterance.pitch = 0.92;
 
     if (onEnd) {
       utterance.onend = onEnd;
       utterance.onerror = onEnd;
     }
 
-    // Small 80ms delay to allow announce chime to begin smoothly
     setTimeout(() => {
       synth?.speak(utterance);
     }, 80);
@@ -197,11 +305,19 @@ export function speakText(text: string, onEnd?: () => void) {
 }
 
 export function stopSpeaking() {
+  if (currentAudioElement) {
+    currentAudioElement.pause();
+    currentAudioElement.currentTime = 0;
+    currentAudioElement = null;
+  }
   if (synth) {
     synth.cancel();
   }
 }
 
 export function isSpeaking(): boolean {
+  if (currentAudioElement && !currentAudioElement.paused) {
+    return true;
+  }
   return !!(synth && synth.speaking);
 }
