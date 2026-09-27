@@ -17,12 +17,14 @@ import {
   VolumeX,
   Languages,
   Menu,
+  Search,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { MascotState } from '@/types';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { useMarket } from '@/components/market/MarketContext';
 import { UploadInvoiceModal } from '@/components/invoices/UploadInvoiceModal';
+import { CommandPalette } from '@/components/search/CommandPalette';
 import { playSound } from '@/lib/sound';
 
 interface AppHeaderProps {
@@ -49,6 +51,8 @@ export function AppHeader({
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t, isSpeaking, speak, stopVoice } = useMarket();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isDemoMenuOpen, setIsDemoMenuOpen] = useState(false);
 
   const displaySubtitle = subtitle || t.statusOperating;
 
@@ -73,6 +77,13 @@ export function AppHeader({
         onInvoiceProcessed={() => {
           if (onStateRefreshed) onStateRefreshed();
         }}
+      />
+
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onOpenUpload={() => setIsUploadOpen(true)}
+        onRunDemo={onRunDemo}
       />
 
       <header className="h-16 border-b border-[#E2E8F0] dark:border-[#1A2D4C] bg-white/95 dark:bg-[#08111F]/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors">
@@ -161,6 +172,22 @@ export function AppHeader({
             <span className="sm:hidden text-xs">Scan</span>
           </button>
 
+          {/* Quick Search Command Palette (⌘K) */}
+          <button
+            onClick={() => {
+              playSound('click');
+              setIsCommandPaletteOpen(true);
+            }}
+            title="Search actions, waybills & suppliers (⌘K)"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] text-[#64748B] hover:text-[#101828] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs text-xs font-medium"
+          >
+            <Search className="w-3.5 h-3.5 text-[#64748B] dark:text-[#8896AB]" />
+            <span className="hidden md:inline">Search</span>
+            <kbd className="hidden lg:inline-block px-1 py-0.2 text-[9px] font-mono bg-[#F1F5F9] dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] rounded text-[#64748B] dark:text-[#8896AB]">
+              ⌘K
+            </kbd>
+          </button>
+
           {/* Theme Toggle (Light / Dark) */}
           <button
             onClick={() => {
@@ -177,35 +204,64 @@ export function AppHeader({
             )}
           </button>
 
-          {/* Scripted Hackathon Interactive Demo Button */}
-          {onRunDemo && (
-            <button
-              onClick={() => {
-                playSound('click');
-                onRunDemo();
-              }}
-              title="Run 6-Step Scripted Hackathon Demo"
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-semibold text-[#344054] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs"
-            >
-              <Play className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2] fill-current" />
-              <span>Interactive Demo</span>
-            </button>
-          )}
+          {/* Compact Demo Tools Dropdown */}
+          {(onRunDemo || onResetData) && (
+            <div className="relative">
+              <button
+                onClick={() => setIsDemoMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-semibold text-[#344054] dark:text-[#8896AB] dark:hover:text-white transition-all shadow-2xs"
+                title="Demo & Simulation Controls"
+              >
+                <Play className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2] fill-current" />
+                <span className="hidden sm:inline">Demo</span>
+                <ChevronDown className="w-3 h-3 text-[#64748B] dark:text-[#8896AB]" />
+              </button>
 
-          {/* Reset Demo State Button */}
-          {onResetData && (
-            <button
-              onClick={() => {
-                playSound('click');
-                onResetData();
-              }}
-              disabled={isResetting}
-              title="Reset data back to seed state"
-              className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-medium text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white transition-all shadow-2xs disabled:opacity-50"
-            >
-              <RotateCcw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
-              <span>Reset State</span>
-            </button>
+              {isDemoMenuOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsDemoMenuOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-1.5 w-52 bg-white dark:bg-[#0D192C] rounded-2xl border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-xl z-50 p-1.5 space-y-1 text-xs">
+                    {onRunDemo && (
+                      <button
+                        onClick={() => {
+                          setIsDemoMenuOpen(false);
+                          playSound('click');
+                          onRunDemo();
+                        }}
+                        className="w-full flex items-center gap-2 p-2 rounded-xl hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] text-left text-[#101828] dark:text-white font-medium"
+                      >
+                        <Play className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2] fill-current shrink-0" />
+                        <div>
+                          <div className="font-semibold">Interactive Walkthrough</div>
+                          <div className="text-[10px] text-[#64748B] dark:text-[#8896AB]">6-Step Hackathon Demo</div>
+                        </div>
+                      </button>
+                    )}
+
+                    {onResetData && (
+                      <button
+                        onClick={() => {
+                          setIsDemoMenuOpen(false);
+                          playSound('click');
+                          onResetData();
+                        }}
+                        disabled={isResetting}
+                        className="w-full flex items-center gap-2 p-2 rounded-xl hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] text-left text-[#64748B] dark:text-[#8896AB] hover:text-[#101828] dark:hover:text-white disabled:opacity-50"
+                      >
+                        <RotateCcw className={`w-3.5 h-3.5 shrink-0 ${isResetting ? 'animate-spin' : ''}`} />
+                        <div>
+                          <div className="font-semibold">Reset Simulation</div>
+                          <div className="text-[10px] text-[#64748B] dark:text-[#8896AB]">Revert to fresh seed state</div>
+                        </div>
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       </header>

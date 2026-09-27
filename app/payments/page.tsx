@@ -6,6 +6,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Payment } from '@/types';
 import { formatArcTxHash, getArcExplorerUrl } from '@/lib/arc';
 import { ArcExplorerModal } from '@/components/arc/ArcExplorerModal';
+import { PaymentVoucherModal, PaymentVoucherData } from '@/components/payments/PaymentVoucherModal';
 import {
   CreditCard,
   CheckCircle2,
@@ -16,6 +17,7 @@ import {
   Filter,
   Loader2,
   Radio,
+  FileCheck2,
 } from 'lucide-react';
 
 export default function PaymentsPage() {
@@ -23,6 +25,7 @@ export default function PaymentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filterAuth, setFilterAuth] = useState('ALL');
   const [selectedTx, setSelectedTx] = useState<{ hash: string; payment?: Payment } | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<PaymentVoucherData | null>(null);
 
   const fetchPayments = async () => {
     try {
@@ -73,6 +76,13 @@ export default function PaymentsPage() {
                 }
               : null
           }
+        />
+
+        {/* Commercial Payment Voucher Modal */}
+        <PaymentVoucherModal
+          isOpen={!!selectedVoucher}
+          onClose={() => setSelectedVoucher(null)}
+          voucher={selectedVoucher}
         />
 
         {/* Top Summary Stats */}
@@ -207,13 +217,38 @@ export default function PaymentsPage() {
                         </button>
                       </td>
                       <td className="py-4 px-6 text-right">
-                        <button
-                          onClick={() => setSelectedTx({ hash: pay.transactionHash, payment: pay })}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#F1F5F9] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-medium text-[#475569] dark:text-[#8896AB] hover:text-[#0F172A] dark:hover:text-white transition-colors"
-                        >
-                          <span>Proof</span>
-                          <ArrowUpRight className="w-3 h-3 text-[#00A878] dark:text-[#35E0B2]" />
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() =>
+                              setSelectedVoucher({
+                                voucherNumber: `OLW-VCH-${pay.id.slice(-5).toUpperCase()}`,
+                                recipientName: pay.vendorName,
+                                invoiceNumber: pay.invoiceNumber,
+                                description: `${pay.vendorName} Settlement via Arc Network`,
+                                amountUsdc: pay.amount,
+                                exchangeRate: 1500,
+                                authorizationType: pay.authorizationType,
+                                txHash: pay.transactionHash,
+                                timestamp: new Date(pay.createdAt).toLocaleString(),
+                                checksPassed: 5,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2] border border-[#00A878]/30 hover:bg-[#00A878]/20 text-[11px] font-semibold transition-colors"
+                            title="View official printable payment voucher"
+                          >
+                            <FileCheck2 className="w-3 h-3" />
+                            <span>Voucher</span>
+                          </button>
+
+                          <button
+                            onClick={() => setSelectedTx({ hash: pay.transactionHash, payment: pay })}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F1F5F9] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-medium text-[#475569] dark:text-[#8896AB] hover:text-[#0F172A] dark:hover:text-white transition-colors"
+                            title="View Arc Explorer Hash"
+                          >
+                            <span>Proof</span>
+                            <ArrowUpRight className="w-3 h-3 text-[#3B66F5] dark:text-[#4D7CFE]" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))

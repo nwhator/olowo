@@ -16,9 +16,11 @@ import {
   ArrowRight,
   ExternalLink,
   RotateCcw,
+  FileText,
 } from 'lucide-react';
 import { useMarket } from '@/components/market/MarketContext';
 import { playSound } from '@/lib/sound';
+import { PaymentVoucherModal, PaymentVoucherData } from '@/components/payments/PaymentVoucherModal';
 
 interface ChatMessage {
   id: string;
@@ -44,6 +46,7 @@ export function WhatsAppTraderSimulator() {
   const [activeScenario, setActiveScenario] = useState<'RICE_PAID' | 'DOUBLE_BILL' | 'HAULAGE_LIMIT'>('RICE_PAID');
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState<PaymentVoucherData | null>(null);
 
   // Scenarios data
   const scenarios: Record<'RICE_PAID' | 'DOUBLE_BILL' | 'HAULAGE_LIMIT', { name: string; messages: ChatMessage[] }> = {
@@ -294,15 +297,40 @@ export function WhatsAppTraderSimulator() {
                   )}
 
                   {msg.arcTxHash && (
-                    <a
-                      href={`https://explorer.arc.network/tx/${msg.arcTxHash}`}
-                      target="_blank"
-                      rel="noopener"
-                      className="text-[10px] font-mono text-[#075E54] dark:text-[#35E0B2] hover:underline flex items-center gap-0.5 ml-auto"
-                    >
-                      <span>Arc Tx Hash</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
+                    <div className="flex items-center gap-2 ml-auto">
+                      <button
+                        onClick={() => {
+                          playSound('click');
+                          setSelectedVoucher({
+                            voucherNumber: 'OLW-VCH-1049A',
+                            recipientName: 'Alhaji Sani Grain Depot (Kano)',
+                            invoiceNumber: 'WB-1049',
+                            poNumber: 'PO-1049',
+                            description: '100 Bags Kano Gold Rice (Warehouse Store Delivery)',
+                            amountUsdc: 480,
+                            exchangeRate: 1500,
+                            authorizationType: 'AUTONOMOUS',
+                            txHash: msg.arcTxHash || '0x4f8a912b7c6e031a9856f4e190b2401',
+                            timestamp: new Date().toLocaleString(),
+                            checksPassed: 5,
+                          });
+                        }}
+                        className="px-2 py-1 rounded bg-[#075E54]/15 dark:bg-white/20 text-[#075E54] dark:text-[#35E0B2] text-[10px] font-bold flex items-center gap-1 hover:bg-[#075E54]/25 transition-all"
+                      >
+                        <FileText className="w-3 h-3" />
+                        <span>View Voucher</span>
+                      </button>
+
+                      <a
+                        href={`https://explorer.arc.network/tx/${msg.arcTxHash}`}
+                        target="_blank"
+                        rel="noopener"
+                        className="text-[10px] font-mono text-[#075E54] dark:text-[#35E0B2] hover:underline flex items-center gap-0.5"
+                      >
+                        <span>Arc Hash</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
                   )}
 
                   <span className="flex items-center gap-0.5 text-[#34B7F1] ml-auto">
@@ -313,6 +341,13 @@ export function WhatsAppTraderSimulator() {
             </div>
           ))}
         </div>
+
+        {/* Payment Voucher Modal Container */}
+        <PaymentVoucherModal
+          isOpen={!!selectedVoucher}
+          onClose={() => setSelectedVoucher(null)}
+          voucher={selectedVoucher}
+        />
 
         {/* WhatsApp Input Mock Bar */}
         <div className="p-2 sm:p-2.5 rounded-2xl bg-white dark:bg-[#1E293B] border border-[#E2E8F0] dark:border-[#334155] flex items-center justify-between gap-2 shadow-xs">

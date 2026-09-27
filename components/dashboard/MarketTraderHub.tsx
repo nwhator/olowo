@@ -14,10 +14,13 @@ import {
   CheckCircle2,
   HelpCircle,
   MessageSquare,
+  PhoneCall,
 } from 'lucide-react';
 import { useMarket } from '@/components/market/MarketContext';
 import { UploadInvoiceModal } from '@/components/invoices/UploadInvoiceModal';
 import { WhatsAppTraderSimulator } from '@/components/simulator/WhatsAppTraderSimulator';
+import { UssdTraderModal } from '@/components/simulator/UssdTraderModal';
+import { playSound } from '@/lib/sound';
 
 interface MarketTraderHubProps {
   onRefresh?: () => void;
@@ -30,6 +33,7 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [activeCardAudio, setActiveCardAudio] = useState<string | null>(null);
   const [showWhatsAppSimulator, setShowWhatsAppSimulator] = useState(false);
+  const [showUssdModal, setShowUssdModal] = useState(false);
 
   const isPidgin = language === 'pidgin';
 
@@ -52,6 +56,11 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
         onInvoiceProcessed={() => {
           if (onRefresh) onRefresh();
         }}
+      />
+
+      <UssdTraderModal
+        isOpen={showUssdModal}
+        onClose={() => setShowUssdModal(false)}
       />
 
       <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-gradient-to-br from-white via-[#F8FAFC] to-[#F1F5F9] dark:from-[#0B1728] dark:via-[#091322] dark:to-[#08111F] p-5 sm:p-6 shadow-sm overflow-hidden relative">
@@ -82,7 +91,19 @@ export function MarketTraderHub({ onRefresh, onOpenDemo }: MarketTraderHubProps)
           </div>
 
           {/* Quick controls */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <button
+              onClick={() => {
+                playSound('click');
+                setShowUssdModal(true);
+              }}
+              className="px-3 py-1.5 rounded-lg border border-[#F5B942]/40 bg-[#F5B942]/10 text-[#D97706] dark:text-[#F5B942] text-xs font-semibold hover:bg-[#F5B942]/20 transition-all flex items-center gap-1.5 shadow-xs"
+              title="Offline Feature Phone (USSD *384*56#)"
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span>Feature Phone (*384#)</span>
+            </button>
+
             <button
               onClick={() => setShowWhatsAppSimulator(!showWhatsAppSimulator)}
               className="px-3 py-1.5 rounded-lg border border-[#075E54]/30 bg-[#075E54]/10 text-[#075E54] dark:text-[#35E0B2] text-xs font-semibold hover:bg-[#075E54]/20 transition-all flex items-center gap-1.5 shadow-xs"
