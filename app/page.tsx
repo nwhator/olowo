@@ -22,6 +22,14 @@ import {
   Volume2,
   VolumeX,
   Languages,
+  Store,
+  Truck,
+  FileText,
+  BadgeAlert,
+  Coins,
+  History,
+  Scale,
+  Award,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { DemoRunnerModal } from '@/components/demo/DemoRunnerModal';
@@ -32,7 +40,7 @@ import { playSound } from '@/lib/sound';
 export default function LandingPage() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { language, toggleLanguage, t, speak, isSpeaking, stopVoice, exchangeRate } = useMarket();
+  const { language, toggleLanguage, t, speak, isSpeaking, stopVoice } = useMarket();
 
   const handleHeroSpeech = () => {
     playSound('click');
@@ -41,8 +49,8 @@ export default function LandingPage() {
     } else {
       const text =
         language === 'pidgin'
-          ? 'Welcome to OLOWO! Autonomous finance operator for modern business and market trade. I dey watch your money 24/7, verify supplier waybills, pay permitted invoices on Arc, protect your shop rent, and ask for your approval before big money moves.'
-          : 'Welcome to OLOWO. Your autonomous AI finance operator. I monitor business transactions, verify vendor invoices, execute permitted USDC payments, protect your reserve floor, and request approval above your mandate.';
+          ? 'Welcome to OLOWO! Autonomous finance operator for African market women and modern businesses. I dey watch your money 24/7: I verify paper waybills, stop double-billing fraud, pay your suppliers sharp-sharp on Arc in USDC, lock your shop rent reserve, and call you before big money moves.'
+          : 'Welcome to OLOWO. The autonomous AI finance operator built for African market traders and modern businesses. We verify paper waybills, prevent duplicate invoice fraud, settle approved supplier payments on Arc in USDC, safeguard your shop rent reserve, and escalate large decisions for human sign-off.';
       speak(text);
     }
   };
@@ -53,7 +61,7 @@ export default function LandingPage() {
       <DemoRunnerModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
 
       {/* Navigation Header */}
-      <nav className="h-20 border-b border-[#E2E8F0] dark:border-[#1A2D4C]/60 px-6 max-w-7xl mx-auto flex items-center justify-between sticky top-0 bg-[#F8FAFC]/90 dark:bg-[#08111F]/90 backdrop-blur-md z-30">
+      <nav className="h-20 border-b border-[#E2E8F0] dark:border-[#1A2D4C]/60 px-6 max-w-7xl mx-auto flex items-center justify-between sticky top-0 bg-[#F8FAFC]/95 dark:bg-[#08111F]/95 backdrop-blur-md z-30">
         <Link href="/" className="flex items-center gap-3">
           <OlowoMascot state="OPERATING" size="sm" />
           <div className="flex items-center gap-2">
@@ -64,14 +72,20 @@ export default function LandingPage() {
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8 text-xs font-medium text-[#64748B] dark:text-[#8896AB]">
-          <a href="#how-it-works" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">How It Works</a>
+        <div className="hidden lg:flex items-center gap-7 text-xs font-medium text-[#64748B] dark:text-[#8896AB]">
+          <a href="#market-walkthrough" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">
+            {language === 'pidgin' ? 'Market Woman Life' : 'Market Trader Flow'}
+          </a>
+          <a href="#tameion-rfbs" className="hover:text-[#0F172A] dark:hover:text-white transition-colors flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00A878] dark:text-[#35E0B2]" />
+            <span>Tameion RFBs</span>
+          </a>
           <a href="#mandate" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">The Mandate</a>
-          <a href="#decisions" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">Decision Log</a>
+          <a href="#decisions" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">Decision Audit</a>
           <a href="#infrastructure" className="hover:text-[#0F172A] dark:hover:text-white transition-colors">Circle & Arc</a>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Language Switcher */}
           <button
             onClick={() => {
@@ -79,6 +93,7 @@ export default function LandingPage() {
               toggleLanguage();
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C] text-xs font-semibold text-[#101828] dark:text-white hover:border-[#00A878] transition-all shadow-xs"
+            title="Switch Language (Nigerian Pidgin / Simple English)"
           >
             <Languages className="w-3.5 h-3.5 text-[#00A878] dark:text-[#35E0B2]" />
             <span>{language === 'pidgin' ? 'Pidgin 🇳🇬' : 'English 🇬🇧'}</span>
@@ -121,44 +136,79 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* SECTION 10: HERO */}
-      <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto text-center space-y-8">
-        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs shadow-xs">
+      {/* Tameion Hackathon Banner */}
+      <div className="bg-[#0D192C] text-white border-b border-[#1A2D4C] py-2 px-6 text-center text-xs">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-4 font-mono">
+          <span className="text-[#35E0B2] font-semibold flex items-center gap-1.5">
+            <Award className="w-3.5 h-3.5" />
+            TAMEION AGENTS HACKATHON
+          </span>
+          <span className="text-[#5E6E85] hidden sm:inline">•</span>
+          <span className="text-[#94A3B8]">Canteen × Circle × Arc</span>
+          <span className="text-[#5E6E85] hidden sm:inline">•</span>
+          <span className="text-white/90">Autonomous Treasury, AP/AR, Waybills &amp; Vendor Rails</span>
+          <a
+            href="https://tameion.thecanteenapp.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#35E0B2] hover:underline inline-flex items-center gap-1 ml-1"
+          >
+            <span>Read RFBs</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+      </div>
+
+      {/* HERO SECTION */}
+      <section className="pt-16 pb-16 px-6 max-w-7xl mx-auto text-center space-y-8">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs shadow-xs">
           <OlowoMascot state="OPERATING" size="sm" />
           <span className="text-[#334155] dark:text-white font-medium">{t.tagline}</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0F172A] dark:text-white max-w-4xl mx-auto leading-[1.08]">
-          {language === 'pidgin' ? 'Your AI Money ' : 'Your AI Finance '}
-          <span className="text-[#00A878] dark:text-[#35E0B2]">Operator.</span>
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0F172A] dark:text-white max-w-5xl mx-auto leading-[1.08]">
+          {language === 'pidgin' ? (
+            <>
+              Make OLOWO Watch Your Shop Money.{' '}
+              <span className="text-[#00A878] dark:text-[#35E0B2]">Face Your Business.</span>
+            </>
+          ) : (
+            <>
+              Autonomous AI Money Operator for{' '}
+              <span className="text-[#00A878] dark:text-[#35E0B2]">Market Traders &amp; Modern Business.</span>
+            </>
+          )}
         </h1>
 
-        <p className="text-base sm:text-lg text-[#475569] dark:text-[#8896AB] max-w-2xl mx-auto leading-relaxed">
-          {t.subtagline}
+        <p className="text-base sm:text-lg text-[#475569] dark:text-[#8896AB] max-w-3xl mx-auto leading-relaxed">
+          {language === 'pidgin'
+            ? 'From Balogun Market Lagos to Kantin Kwari Kano: OLOWO dey scan paper waybills, block double-billing fraud, pay your suppliers sharp-sharp in digital USDC on Arc, lock your shop rent reserve, and speak to you in clear Nigerian Pidgin.'
+            : 'From Balogun textile merchants to cross-border commodity traders: OLOWO reads handwritten paper waybills, stops duplicate billing fraud, executes permitted payments on Arc in USDC (<500ms), protects your shop rent reserve, and speaks audio briefings out loud.'}
         </p>
 
+        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <Link
             href="/dashboard"
-            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#00A878] hover:bg-[#009166] text-white text-sm font-semibold shadow-md transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#00A878] hover:bg-[#009166] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] text-sm font-semibold shadow-md transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
           >
-            <span>Launch OLOWO</span>
+            <span>{language === 'pidgin' ? 'Open OLOWO Dashboard' : 'Launch OLOWO'}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
 
           <button
             onClick={handleHeroSpeech}
-            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-medium text-[#1E293B] dark:text-white transition-all flex items-center justify-center gap-2 shadow-xs"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-medium text-[#1E293B] dark:text-white transition-all flex items-center justify-center gap-2 shadow-xs group"
           >
             {isSpeaking ? (
               <>
-                <VolumeX className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                <span>Stop Man Voice</span>
+                <VolumeX className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2] animate-pulse" />
+                <span className="text-[#00A878] dark:text-[#35E0B2] font-semibold">{t.stopVoice}</span>
               </>
             ) : (
               <>
-                <Volume2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                <span>Listen with Man Voice</span>
+                <Volume2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2] group-hover:scale-110 transition-transform" />
+                <span>{language === 'pidgin' ? 'Listen (Natural Man Voice)' : 'Listen (Spoken Briefing)'}</span>
               </>
             )}
           </button>
@@ -175,382 +225,615 @@ export default function LandingPage() {
           </button>
         </div>
 
-        {/* Hero Visual: Actual Dashboard UI Preview */}
+        {/* Hero Visual: Dual Currency Live Financial State */}
         <div className="pt-10 max-w-5xl mx-auto">
           <div className="rounded-2xl border border-[#E2E8F0] dark:border-[#1A2D4C] bg-white dark:bg-[#0D192C]/90 shadow-xl overflow-hidden p-6 text-left space-y-6">
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#1A2D4C] pb-4">
+            <div className="flex flex-wrap items-center justify-between border-b border-[#E2E8F0] dark:border-[#1A2D4C] pb-4 gap-2">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-[#EF4444]" />
                 <span className="w-3 h-3 rounded-full bg-[#F59E0B]" />
                 <span className="w-3 h-3 rounded-full bg-[#10B981]" />
-                <span className="text-xs font-mono text-[#64748B] dark:text-[#5E6E85] ml-2">app.olowo.finance/dashboard</span>
+                <span className="text-xs font-mono text-[#64748B] dark:text-[#5E6E85] ml-2">
+                  app.olowo.finance • Mama Ngozi Commodity Stores
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 dark:bg-[#35E0B2]/10 border border-[#00A878]/20 dark:border-[#35E0B2]/30 px-2 py-0.5 rounded font-semibold">
-                  ● {language === 'pidgin' ? 'OLOWO DEY WATCH THE MONEY' : 'AUTONOMOUS OPERATIONS ACTIVE'}
+                <span className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 dark:bg-[#35E0B2]/10 border border-[#00A878]/20 dark:border-[#35E0B2]/30 px-2.5 py-0.5 rounded-full font-semibold">
+                  ● {language === 'pidgin' ? 'OLOWO DEY WATCH THE MONEY (1 USDC = ₦1,500)' : 'AUTONOMOUS OPERATOR ACTIVE (1 USDC = ₦1,500)'}
                 </span>
               </div>
             </div>
 
-            {/* Quick Metrics Teaser */}
+            {/* Quick Metrics Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
                 <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
-                  {language === 'pidgin' ? 'TOTAL MONEY' : 'TREASURY'}
+                  {language === 'pidgin' ? 'TOTAL MONEY WE GET' : 'TOTAL TREASURY'}
                 </div>
-                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$12,400 <span className="text-xs text-[#00A878] dark:text-[#35E0B2]">USDC</span></div>
-                <div className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] font-semibold mt-0.5">~₦18.6M Naira</div>
+                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">
+                  $12,400 <span className="text-xs text-[#00A878] dark:text-[#35E0B2]">USDC</span>
+                </div>
+                <div className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] font-semibold mt-0.5">
+                  ~₦18.6M Naira
+                </div>
               </div>
 
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
                 <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
-                  {language === 'pidgin' ? 'FREE TO SPEND' : 'AVAILABLE'}
+                  {language === 'pidgin' ? 'FREE TO SPEND TODAY' : 'AVAILABLE SPEND'}
                 </div>
-                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$6,550 <span className="text-xs text-[#3B66F5] dark:text-[#4D7CFE]">USDC</span></div>
-                <div className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] font-semibold mt-0.5">~₦9.82M Naira</div>
+                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">
+                  $6,550 <span className="text-xs text-[#3B66F5] dark:text-[#4D7CFE]">USDC</span>
+                </div>
+                <div className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] font-semibold mt-0.5">
+                  ~₦9.82M Naira
+                </div>
               </div>
 
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
-                  {language === 'pidgin' ? 'SHOP RENT (LOCKED)' : 'RESERVED'}
+                <div className="text-[11px] font-mono text-[#64748B] dark:text-[#8896AB] flex items-center gap-1">
+                  <Lock className="w-3 h-3 text-[#F59E0B]" />
+                  <span>{language === 'pidgin' ? 'SHOP RENT (LOCKED)' : 'RESERVE FLOOR'}</span>
                 </div>
-                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">$5,850 <span className="text-xs text-[#F59E0B] dark:text-[#F5B942]">USDC</span></div>
-                <div className="text-xs font-mono text-[#F59E0B] dark:text-[#F5B942] font-semibold mt-0.5">~₦8.77M Naira</div>
+                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">
+                  $5,000 <span className="text-xs text-[#F59E0B] dark:text-[#F5B942]">USDC</span>
+                </div>
+                <div className="text-xs font-mono text-[#F59E0B] dark:text-[#F5B942] font-semibold mt-0.5">
+                  ~₦7.50M Naira [SAFE]
+                </div>
               </div>
 
               <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#FDE68A] dark:border-[#F5B942]/30">
                 <div className="text-[11px] font-mono text-[#B45309] dark:text-[#F5B942]">
-                  {language === 'pidgin' ? 'NEEDS YOUR SAY' : 'AWAITING APPROVAL'}
+                  {language === 'pidgin' ? 'NEEDS YOUR SAY-SO' : 'AWAITING APPROVAL'}
                 </div>
-                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">2 <span className="text-xs text-[#64748B] dark:text-[#8896AB]">Bills</span></div>
-                <div className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] font-semibold mt-0.5">Exceeds limit</div>
+                <div className="text-2xl font-bold font-mono text-[#0F172A] dark:text-white mt-1">
+                  2 <span className="text-xs text-[#64748B] dark:text-[#8896AB]">Bills</span>
+                </div>
+                <div className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] font-semibold mt-0.5">
+                  &gt; $1,000 Limit
+                </div>
               </div>
             </div>
 
-            {/* Mock feed row */}
-            <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F]/80 border border-[#E2E8F0] dark:border-[#1A2D4C] flex items-center justify-between text-xs">
+            {/* Live autonomous transaction ticker */}
+            <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F]/80 border border-[#E2E8F0] dark:border-[#1A2D4C] flex flex-wrap items-center justify-between text-xs gap-2">
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                <span className="text-[#0F172A] dark:text-white font-medium">Autonomously paid ABC Design $750 USDC</span>
-                <span className="text-[#64748B] dark:text-[#5E6E85] font-mono">• 5/5 Policy Checks Passed</span>
+                <span className="text-[#0F172A] dark:text-white font-medium">
+                  {language === 'pidgin'
+                    ? 'Autonomously paid Alhaji Sani $480 USDC (~₦720,000) for 10 Bags Mama Gold Rice'
+                    : 'Autonomously paid Alhaji Sani $480 USDC (~₦720,000) for 10 Bags Rice'}
+                </span>
+                <span className="text-[#64748B] dark:text-[#5E6E85] font-mono hidden sm:inline">
+                  • 5/5 Policy Checks Passed
+                </span>
               </div>
-              <span className="font-mono text-[#64748B] dark:text-[#8896AB]">Arc Tx: 0x8f4d...2a91</span>
+              <span className="font-mono text-[#64748B] dark:text-[#8896AB]">
+                Arc Tx: 0x8f4d...2a91 (&lt;500ms)
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 11: CORE LOOP */}
-      <section id="how-it-works" className="py-24 px-6 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 bg-white dark:bg-[#0A1424]">
+      {/* SECTION: A DAY IN THE MARKET WITH OLOWO (REAL MARKET WOMAN WALKTHROUGH) */}
+      <section id="market-walkthrough" className="py-24 px-6 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 bg-white dark:bg-[#0A1424]">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
-              AUTONOMOUS EXECUTION LOOP
+              REAL-WORLD AFRICAN COMMERCE
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-              Your business shouldn&apos;t need to approve every invoice.
+              {language === 'pidgin'
+                ? 'How Mama Ngozi Dey Use OLOWO For Balogun Market'
+                : 'A Day in the Market: How OLOWO Runs Real SME Finance'}
             </h2>
             <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-              OLOWO handles routine financial operations automatically, while keeping every action inside the rules you define.
+              {language === 'pidgin'
+                ? 'Market woman no get time to dey calculate spreadsheet or type long code. See how OLOWO dey handle her supplier waybills, driver transport, and rent reserve.'
+                : 'Market merchants manage high-volume wholesale trade with handwritten waybills, driver logistics, and WhatsApp photos. See how OLOWO executes their financial operations autonomously.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 relative shadow-xs">
-              <div className="text-xs font-mono font-bold text-[#00A878] dark:text-[#35E0B2]">01 / OBSERVE</div>
-              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">VERIFY</h3>
-              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Inspects invoices, matches contracts, checks milestones, eliminates duplicate claims, and audits vendor reputation.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 relative shadow-xs">
-              <div className="text-xs font-mono font-bold text-[#3B66F5] dark:text-[#4D7CFE]">02 / COMPLIANCE</div>
-              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">CHECK POLICY</h3>
-              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Backend deterministic engine verifies amount against autonomous limits, daily thresholds, and minimum reserve floor.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 relative shadow-xs">
-              <div className="text-xs font-mono font-bold text-[#F59E0B] dark:text-[#F5B942]">03 / SETTLEMENT</div>
-              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">ACT OR ASK</h3>
-              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                If allowed, executes USDC payment over Arc network. If outside mandate, requests human owner authorization.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 relative shadow-xs">
-              <div className="text-xs font-mono font-bold text-[#00A878] dark:text-[#35E0B2]">04 / ACCOUNTABILITY</div>
-              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">AUDIT</h3>
-              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Every decision, transaction hash, and policy proof is sealed in the immutable OLOWO Decision Log.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 12: THE MANDATE */}
-      <section id="mandate" className="py-24 px-6 max-w-7xl mx-auto space-y-12">
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] uppercase tracking-wider font-semibold">
-            AUTHORITY & BOUNDARIES
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-            You define the mandate. OLOWO operates inside it.
-          </h2>
-          <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-            The AI has agency, but the business owns the authority. You set clear deterministic rules.
-          </p>
-        </div>
-
-        {/* Large Mandate Card */}
-        <div className="max-w-xl mx-auto p-8 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-lg space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
-            <div className="flex items-center gap-2.5">
-              <Shield className="w-5 h-5 text-[#00A878] dark:text-[#35E0B2]" />
-              <span className="font-mono font-bold text-[#0F172A] dark:text-white tracking-wider">OLOWO MANDATE</span>
-            </div>
-            <span className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 dark:bg-[#35E0B2]/10 px-2 py-0.5 rounded font-semibold">
-              ENFORCED DETERMINISTICALLY
-            </span>
-          </div>
-
-          <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-[#1A2D4C]/60 text-xs">
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">Autonomous payment limit</span>
-              <span className="font-mono font-bold text-[#0F172A] dark:text-white text-sm">$1,000 USDC</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">Daily autonomous spending</span>
-              <span className="font-mono font-bold text-[#0F172A] dark:text-white text-sm">$5,000 USDC</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">Minimum treasury reserve floor</span>
-              <span className="font-mono font-bold text-[#DC2626] dark:text-[#EF5B5B] text-sm">$5,000 USDC</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">New vendors</span>
-              <span className="font-mono font-bold text-[#B45309] dark:text-[#F5B942]">Approval required</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">Contractor payments</span>
-              <span className="font-mono font-bold text-[#00A878] dark:text-[#35E0B2]">Milestone required</span>
-            </div>
-
-            <div className="flex items-center justify-between pt-3">
-              <span className="text-[#64748B] dark:text-[#8896AB]">Flagged counterparties</span>
-              <span className="font-mono font-bold text-[#DC2626] dark:text-[#EF5B5B]">Blocked</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 13 & 14: TWO CONTRASTING SCENARIOS */}
-      <section className="py-24 px-6 bg-white dark:bg-[#0A1424] border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
-        <div className="max-w-7xl mx-auto space-y-16">
-          {/* Section 13: $750 payment within mandate */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
-                SCENARIO 1 • WITHIN MANDATE
-              </span>
-              <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-                When everything checks out, OLOWO acts.
-              </h2>
-              <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Contractor ABC Design submits an invoice for $750 USDC for Milestone 4.
-                OLOWO verifies the deliverables against contract CT-024, audits duplicate hashes,
-                and verifies that post-payment treasury maintains the $5,000 reserve.
-              </p>
-              <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-mono space-y-1.5">
-                <div className="text-[#00A878] dark:text-[#35E0B2] font-semibold">✓ 5/5 Policy Checks Passed</div>
-                <div className="text-[#64748B] dark:text-[#8896AB]">Settled: $750 USDC autonomously via Arc</div>
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#A7F3D0] dark:border-[#35E0B2]/40 shadow-lg space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <span className="text-xs font-bold text-[#0F172A] dark:text-white">ABC Design • INV-1042</span>
-                <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] font-bold">$750 USDC</span>
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Vendor verified</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Contract CT-024 verified</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Milestone 4 verified</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Policy passed ($750 &lt; $1,000 mandate)</span>
-                </div>
-              </div>
-              <div className="p-3 rounded-lg bg-[#00A878]/10 dark:bg-[#35E0B2]/10 border border-[#00A878]/20 dark:border-[#35E0B2]/30 text-xs font-mono text-[#00A878] dark:text-[#35E0B2] text-center font-bold">
-                ✓ AUTONOMOUS PAYMENT APPROVED & SETTLED
-              </div>
-            </div>
-          </div>
-
-          {/* Section 14: $4,800 payment outside mandate */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-8 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
-            <div className="order-2 lg:order-1 p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#FDE68A] dark:border-[#F5B942]/40 shadow-lg space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
-                <span className="text-xs font-bold text-[#0F172A] dark:text-white">ABC Design • INV-1044</span>
-                <span className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] font-bold">$4,800 USDC</span>
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Vendor verified</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
-                  <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
-                  <span>Milestone 5 complete</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#B45309] dark:text-[#F5B942]">
-                  <AlertTriangle className="w-4 h-4 text-[#B45309] dark:text-[#F5B942]" />
-                  <span>Exceeds autonomous limit ($4,800 &gt; $1,000)</span>
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#FDE68A] dark:border-[#F5B942]/30 space-y-2">
-                <span className="text-[11px] font-mono text-[#B45309] dark:text-[#F5B942] block font-semibold">
-                  RESULT: HUMAN APPROVAL REQUIRED
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Step 1: Waybill Snapshot */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-4 relative shadow-xs hover:border-[#00A878] transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#00A878] dark:text-[#35E0B2]">08:30 AM</span>
+                <span className="p-2 rounded-xl bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2]">
+                  <FileText className="w-4 h-4" />
                 </span>
-                <Link
-                  href="/approvals"
-                  className="block w-full py-2.5 text-center rounded-lg bg-[#00A878] hover:bg-[#009166] text-white font-bold text-xs shadow-xs"
-                >
-                  Approve $4,800 USDC
-                </Link>
+              </div>
+              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">
+                {language === 'pidgin' ? 'Snap Paper Waybill' : 'Paper Waybill OCR'}
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                Alhaji Sani drops 10 bags of Mama Gold Rice from Kano. Driver snaps the crumpled handwritten paper waybill. OLOWO extracts items, validates $480 USDC (~₦720,000), checks Alhaji&apos;s whitelisted address, and settles in &lt;500ms on Arc.
+              </p>
+              <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] font-semibold">
+                ✓ Auto-Paid &amp; Spoken Aloud
               </div>
             </div>
 
-            <div className="order-1 lg:order-2 space-y-6">
-              <span className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] uppercase tracking-wider font-semibold">
-                SCENARIO 2 • EXCEEDS MANDATE
-              </span>
-              <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-                When something falls outside the mandate, OLOWO asks.
-              </h2>
-              <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Everything is valid and verified. But $4,800 exceeds OLOWO&apos;s $1,000 autonomous authority.
-                OLOWO does not guess or bypass the boundary—it surfaces an approval card with full verification proof and awaits owner sign-off.
+            {/* Step 2: Double Billing Fraud Block */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-4 relative shadow-xs hover:border-[#EF4444] transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#EF4444]">11:15 AM</span>
+                <span className="p-2 rounded-xl bg-[#EF4444]/10 text-[#EF4444]">
+                  <Ban className="w-4 h-4" />
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">
+                {language === 'pidgin' ? 'Block Double Billing' : 'Duplicate Fraud Block'}
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                A dishonest driver re-submits a photo of an old waybill for the same rice bags. OLOWO computes the cryptographic document hash, flags the duplicate, and blocks payment immediately.
               </p>
+              <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#EF4444] font-semibold">
+                ✕ Blocked: &ldquo;Madam, na double bill!&rdquo;
+              </div>
+            </div>
+
+            {/* Step 3: Human Escalation */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-4 relative shadow-xs hover:border-[#F59E0B] transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#F59E0B]">02:00 PM</span>
+                <span className="p-2 rounded-xl bg-[#F59E0B]/10 text-[#F5B942]">
+                  <Truck className="w-4 h-4" />
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">
+                {language === 'pidgin' ? 'Big Bill? E Go Ask You' : 'Exceeds Mandate Limit'}
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                Cotonou haulage driver delivers lace container with $1,400 USDC (~₦2.1M) fee. Because it exceeds the $1,000 autonomous mandate limit, OLOWO pauses and alerts Mama Ngozi with spoken audio for 1-click authorization.
+              </p>
+              <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#F59E0B] font-semibold">
+                ⚠ Escalated: Needs Madam Sign-off
+              </div>
+            </div>
+
+            {/* Step 4: Shop Rent Reserve Protection */}
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-4 relative shadow-xs hover:border-[#3B66F5] transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#3B66F5] dark:text-[#4D7CFE]">06:00 PM</span>
+                <span className="p-2 rounded-xl bg-[#3B66F5]/10 text-[#3B66F5] dark:text-[#4D7CFE]">
+                  <Store className="w-4 h-4" />
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">
+                {language === 'pidgin' ? 'Shop Rent Dey Safe' : 'Locked Rent Reserve'}
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                The market closes. No matter how many bills arrived, OLOWO strictly preserved the $5,000 USDC (~₦7.5M) Shop Rent &amp; Ajo reserve. Speaks an evening spoken summary: &ldquo;Madam, your rent is locked, 100% safe.&rdquo;
+              </p>
+              <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#3B66F5] dark:text-[#4D7CFE] font-semibold">
+                🛡 $5,000 Rent Untouched
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 15: DECISION LOG SHOWCASE */}
-      <section id="decisions" className="py-24 px-6 max-w-7xl mx-auto space-y-12">
+      {/* SECTION: TAMEION AGENTS HACKATHON · ALL 5 RFBS DETAILED MAPPING */}
+      <section id="tameion-rfbs" className="py-24 px-6 max-w-7xl mx-auto space-y-16">
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
-            EXPLAINABILITY & AUDITABILITY
-          </span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2] text-xs font-mono font-semibold">
+            CANTEEN × CIRCLE × ARC
+          </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-            Every decision is explainable.
+            Built Directly For The Tameion RFB Architecture
           </h2>
           <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-            No black boxes. No hallucinated rationales. Every autonomous action records the verified facts and exact policy checks.
+            In ancient Byzantium, the <em>Tameion</em> was the imperial treasury room that minted coins and paid the troops.
+            In Greek markets, the <em>Agoranomoi</em> inspected merchants&apos; cups and weights against public standards.
+            OLOWO brings this ancient stewardship to autonomous finance, implementing all 5 Requests for Builders (RFBs).
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-lg space-y-4 font-mono text-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
-            <span className="text-[#64748B] dark:text-[#8896AB]">09:42 UTC</span>
-            <span className="px-2 py-0.5 rounded bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2] border border-[#00A878]/20 dark:border-[#35E0B2]/30 font-semibold">
-              PAYMENT EXECUTED
-            </span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* RFB 01 */}
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 px-2.5 py-1 rounded-md">
+                  RFB 01
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Tameion Spec</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                Intelligent Business Treasury
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                <strong>Problem:</strong> Cash spread across accounts earning zero yield, risking liquidity shortfall.<br />
+                <strong>OLOWO Engine:</strong> Continuous cash forecasting, hard $5,000 shop rent reserve floor, and idle surplus deployment to Circle USYC yield.
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2]">
+              → Working capital &amp; runway alerts
+            </div>
           </div>
 
-          <div className="flex justify-between items-baseline">
-            <span className="text-sm font-bold text-[#0F172A] dark:text-white">ABC Design</span>
-            <span className="text-sm font-bold text-[#00A878] dark:text-[#35E0B2]">$750 USDC</span>
+          {/* RFB 02 */}
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#3B66F5] dark:text-[#4D7CFE] bg-[#3B66F5]/10 px-2.5 py-1 rounded-md">
+                  RFB 02
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Tameion Spec</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                AP/AR Automation Agent
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                <strong>Problem:</strong> Invoices read by hand, duplicate billing, and manual reconciliation errors.<br />
+                <strong>OLOWO Engine:</strong> Multi-format parser (paper waybills, PDF, WhatsApp camera OCR), duplicate invoice hash detection, and payment timing optimizer.
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#3B66F5] dark:text-[#4D7CFE]">
+              → Eliminates 100% of double billing
+            </div>
           </div>
 
-          <div className="space-y-1 text-[#64748B] dark:text-[#8896AB] pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
-            <div className="text-[#0F172A] dark:text-white font-semibold mb-1">Why?</div>
-            <div>• Contract milestone 4 verified.</div>
-            <div>• Vendor approved.</div>
-            <div>• No duplicate invoice detected.</div>
-            <div>• Treasury reserve maintained.</div>
-            <div>• Payment within autonomous limit.</div>
+          {/* RFB 03 */}
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#F59E0B] dark:text-[#F5B942] bg-[#F59E0B]/10 px-2.5 py-1 rounded-md">
+                  RFB 03
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Tameion Spec</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                Contractor &amp; Vendor Network
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                <strong>Problem:</strong> No memory of supplier reliability or verified goods delivery.<br />
+                <strong>OLOWO Engine:</strong> Whitelisted suppliers (Alhaji Sani Kano, Balogun Textiles, Cotonou Haulage), milestone release verification, and on-time delivery scoring.
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#F59E0B] dark:text-[#F5B942]">
+              → Verified delivery before payment
+            </div>
           </div>
 
-          <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#1A2D4C] flex justify-between items-center text-[11px] text-[#94A3B8] dark:text-[#5E6E85]">
-            <span>5/5 policy checks passed</span>
-            <span>Tx: 0x8f4d92a1...2a91</span>
+          {/* RFB 04 */}
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 px-2.5 py-1 rounded-md">
+                  RFB 04
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Tameion Spec</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                Autonomous Business Operator
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                <strong>Problem:</strong> A person still sits between every dollar in and dollar out.<br />
+                <strong>OLOWO Engine:</strong> Autonomous execution below $1,000 threshold, deterministic human escalation above threshold, and complete Arc USDC settlement (&lt;500ms).
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2]">
+              → Full end-to-end business cycle
+            </div>
+          </div>
+
+          {/* RFB 05 */}
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#9333EA] bg-[#9333EA]/10 px-2.5 py-1 rounded-md">
+                  RFB 05
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Tameion Spec</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                Compliance &amp; Immutable Audit
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                <strong>Problem:</strong> Compliance screening is a one-off gate with zero audit trail.<br />
+                <strong>OLOWO Engine:</strong> Continuous counterparty wallet screening, OFAC blacklists, and cryptographic decision logs (the ancient Greek <em>Euthyna</em>) proving every action.
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#9333EA]">
+              → Zero hallucination, 100% audit proof
+            </div>
+          </div>
+
+          {/* Prior Art: Agoranomoi & The Symbolon */}
+          <div className="p-7 rounded-3xl bg-[#F8FAFC] dark:bg-[#12223B]/60 border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-sm space-y-4 relative flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#0F172A] dark:text-white bg-black/5 dark:bg-white/10 px-2.5 py-1 rounded-md">
+                  Prior Art
+                </span>
+                <span className="text-[11px] font-mono text-[#64748B]">Historical Roots</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                The Symbolon &amp; Agoranomoi
+              </h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                A <em>symbolon</em> was a split tally matched before payment; the <em>agoranomoi</em> inspected marketplace measures. OLOWO performs the digital symbolon: matching PO + waybill + warehouse receipt before releasing Arc USDC.
+              </p>
+            </div>
+            <div className="pt-4 border-t border-[#E2E8F0] dark:border-[#1A2D4C] text-[11px] font-mono text-[#64748B] dark:text-[#8896AB]">
+              → Ancient market trust, modernized
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 16: PROGRAMMABLE MONEY & INFRASTRUCTURE */}
-      <section id="infrastructure" className="py-24 px-6 bg-white dark:bg-[#0A1424] border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
+      {/* THE MANDATE: DETERMINISTIC RULES */}
+      <section id="mandate" className="py-24 px-6 bg-white dark:bg-[#0A1424] border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] uppercase tracking-wider font-semibold">
+              DETERMINISTIC GUARDRAILS
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+              You Set The Mandate. The AI Cannot Talk Past It.
+            </h2>
+            <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
+              Rules are enforced in hard deterministic code, not probabilistic LLM prompts.
+              If an invoice exceeds the mandate limit or touches the shop rent floor, OLOWO cannot execute it.
+            </p>
+          </div>
+
+          {/* Large Mandate Card */}
+          <div className="max-w-xl mx-auto p-8 rounded-3xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-lg space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-5 h-5 text-[#00A878] dark:text-[#35E0B2]" />
+                <span className="font-mono font-bold text-[#0F172A] dark:text-white tracking-wider">OLOWO MANDATE</span>
+              </div>
+              <span className="text-[11px] font-mono text-[#00A878] dark:text-[#35E0B2] bg-[#00A878]/10 dark:bg-[#35E0B2]/10 px-2 py-0.5 rounded font-semibold">
+                ENFORCED DETERMINISTICALLY
+              </span>
+            </div>
+
+            <div className="space-y-4 divide-y divide-[#E2E8F0] dark:divide-[#1A2D4C]/60 text-xs">
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">Autonomous payment limit</span>
+                <span className="font-mono font-bold text-[#0F172A] dark:text-white text-sm">
+                  $1,000 USDC <span className="text-xs text-[#00A878] dark:text-[#35E0B2]">(~₦1.5M)</span>
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">Daily autonomous budget</span>
+                <span className="font-mono font-bold text-[#0F172A] dark:text-white text-sm">
+                  $5,000 USDC <span className="text-xs text-[#00A878] dark:text-[#35E0B2]">(~₦7.5M)</span>
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">Shop rent reserve floor</span>
+                <span className="font-mono font-bold text-[#DC2626] dark:text-[#EF5B5B] text-sm">
+                  $5,000 USDC <span className="text-xs text-[#DC2626]">[LOCKED]</span>
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">New unverified suppliers</span>
+                <span className="font-mono font-bold text-[#B45309] dark:text-[#F5B942]">Owner sign-off required</span>
+              </div>
+
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">Contractor &amp; driver payouts</span>
+                <span className="font-mono font-bold text-[#00A878] dark:text-[#35E0B2]">Goods receipt required</span>
+              </div>
+
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-[#64748B] dark:text-[#8896AB]">Duplicate waybills &amp; flagged wallets</span>
+                <span className="font-mono font-bold text-[#DC2626] dark:text-[#EF5B5B]">Strictly blocked</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TWO SCENARIOS SHOWCASE */}
+      <section className="py-24 px-6 max-w-7xl mx-auto space-y-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
+              SCENARIO 1 • WITHIN MANDATE
+            </span>
+            <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+              When everything checks out, OLOWO acts.
+            </h2>
+            <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
+              Alhaji Sani delivers 10 bags of rice and submits waybill INV-1042 for $480 USDC (~₦720,000).
+              OLOWO validates the price against benchmark, confirms no duplicate hash exists, ensures treasury retains the $5,000 shop rent floor, and releases payment on Arc in &lt;500ms.
+            </p>
+            <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#E2E8F0] dark:border-[#1A2D4C] text-xs font-mono space-y-1.5">
+              <div className="text-[#00A878] dark:text-[#35E0B2] font-semibold">✓ 5/5 Policy Checks Passed</div>
+              <div className="text-[#64748B] dark:text-[#8896AB]">Settled: $480 USDC autonomously via Arc</div>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#A7F3D0] dark:border-[#35E0B2]/40 shadow-lg space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
+              <span className="text-xs font-bold text-[#0F172A] dark:text-white">Alhaji Sani Rice • INV-1042</span>
+              <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] font-bold">$480 USDC (~₦720k)</span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Supplier whitelisted (Alhaji Sani Kano)</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Paper waybill verified (10 Bags Mama Gold)</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>No duplicate waybill hash</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Within $1,000 mandate limit ($480 &lt; $1,000)</span>
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-[#00A878]/10 dark:bg-[#35E0B2]/10 border border-[#00A878]/20 dark:border-[#35E0B2]/30 text-xs font-mono text-[#00A878] dark:text-[#35E0B2] text-center font-bold">
+              ✓ AUTONOMOUS PAYMENT APPROVED &amp; SETTLED ON ARC
+            </div>
+          </div>
+        </div>
+
+        {/* Section: $1,400 haulage fee exceeds mandate */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-12 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
+          <div className="order-2 lg:order-1 p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#FDE68A] dark:border-[#F5B942]/40 shadow-lg space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
+              <span className="text-xs font-bold text-[#0F172A] dark:text-white">Cotonou Haulage Driver • INV-1048</span>
+              <span className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] font-bold">$1,400 USDC (~₦2.1M)</span>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Haulage logistics partner verified</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#334155] dark:text-white/90">
+                <CheckCircle2 className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2]" />
+                <span>Inter-state border clearance verified</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#B45309] dark:text-[#F5B942]">
+                <AlertTriangle className="w-4 h-4 text-[#B45309] dark:text-[#F5B942]" />
+                <span>Exceeds autonomous limit ($1,400 &gt; $1,000)</span>
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#08111F] border border-[#FDE68A] dark:border-[#F5B942]/30 space-y-2">
+              <span className="text-[11px] font-mono text-[#B45309] dark:text-[#F5B942] block font-semibold">
+                RESULT: OWNER APPROVAL REQUIRED
+              </span>
+              <Link
+                href="/approvals"
+                className="block w-full py-2.5 text-center rounded-lg bg-[#00A878] hover:bg-[#009166] text-white font-bold text-xs shadow-xs"
+              >
+                Approve $1,400 USDC (~₦2,100,000)
+              </Link>
+            </div>
+          </div>
+
+          <div className="order-1 lg:order-2 space-y-6">
+            <span className="text-xs font-mono text-[#B45309] dark:text-[#F5B942] uppercase tracking-wider font-semibold">
+              SCENARIO 2 • EXCEEDS MANDATE
+            </span>
+            <h2 className="text-3xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+              When a payment exceeds authority, OLOWO asks.
+            </h2>
+            <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
+              Everything is valid. But $1,400 exceeds OLOWO&apos;s $1,000 autonomous ceiling.
+              OLOWO does not guess, hallucinate, or bypass the rules. It surfaces an approval card with full verification proof, plays a voice notification, and awaits Madam/Oga&apos;s sign-off.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* DECISION LOG / EUTHYNA AUDIT TRAIL */}
+      <section id="decisions" className="py-24 px-6 bg-white dark:bg-[#0A1424] border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <span className="text-xs font-mono text-[#00A878] dark:text-[#35E0B2] uppercase tracking-wider font-semibold">
+              THE EUTHYNA PROOF TRAIL
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
+              Every Decision Is Cryptographically Explainable.
+            </h2>
+            <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
+              No black boxes. No hallucinated rationales. Every autonomous action records the verified facts and exact policy checks on the Arc blockchain.
+            </p>
+          </div>
+
+          <div className="max-w-2xl mx-auto p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] shadow-lg space-y-4 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0] dark:border-[#1A2D4C]">
+              <span className="text-[#64748B] dark:text-[#8896AB]">08:31 UTC • Arc Block #1,492,084</span>
+              <span className="px-2 py-0.5 rounded bg-[#00A878]/10 text-[#00A878] dark:text-[#35E0B2] border border-[#00A878]/20 dark:border-[#35E0B2]/30 font-semibold">
+                AUTONOMOUS SETTLEMENT
+              </span>
+            </div>
+
+            <div className="flex justify-between items-baseline">
+              <span className="text-sm font-bold text-[#0F172A] dark:text-white">Alhaji Sani Rice (Kano)</span>
+              <span className="text-sm font-bold text-[#00A878] dark:text-[#35E0B2]">$480 USDC (~₦720k)</span>
+            </div>
+
+            <div className="space-y-1 text-[#64748B] dark:text-[#8896AB] pt-2 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60">
+              <div className="text-[#0F172A] dark:text-white font-semibold mb-1">Audit Trail &amp; Proof:</div>
+              <div>• Waybill scanned: 10 Bags Mama Gold Rice ($48/bag verified).</div>
+              <div>• Supplier whitelisted &amp; verified.</div>
+              <div>• Zero duplicate waybill hash found.</div>
+              <div>• Shop rent reserve floor of $5,000 preserved.</div>
+              <div>• Within $1,000 autonomous mandate threshold.</div>
+            </div>
+
+            <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#1A2D4C] flex justify-between items-center text-[11px] text-[#94A3B8] dark:text-[#5E6E85]">
+              <span>5/5 deterministic policy checks passed</span>
+              <span className="text-[#00A878] dark:text-[#35E0B2]">Tx: 0x8f4d92a1...2a91 (&lt;500ms)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SETTLEMENT INFRASTRUCTURE */}
+      <section id="infrastructure" className="py-24 px-6 border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 bg-[#F8FAFC] dark:bg-[#08111F]">
         <div className="max-w-7xl mx-auto text-center space-y-12">
           <div className="max-w-3xl mx-auto space-y-4">
             <span className="text-xs font-mono text-[#3B66F5] dark:text-[#4D7CFE] uppercase tracking-wider font-semibold">
-              SETTLEMENT INFRASTRUCTURE
+              CIRCLE × ARC FINANCIAL INFRASTRUCTURE
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-              Programmable money for autonomous business.
+              Stablecoin Rails For Continuous Autonomous Commerce
             </h2>
             <p className="text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
-              OLOWO uses Circle USDC infrastructure and Arc for the financial settlement layer.
-              OLOWO is the intelligent agent operating layer; Circle and Arc provide the institutional rails underneath it.
+              OLOWO is the intelligent AI operating brain. Circle and Arc provide the institutional stablecoin foundation underneath it.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
               <ShieldCheck className="w-5 h-5 text-[#00A878] dark:text-[#35E0B2]" />
               <h3 className="text-base font-bold text-[#0F172A] dark:text-white">Circle Wallets</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Developer-controlled treasury wallets with programmatic API access. Private keys are never exposed to LLMs.
+                Developer-controlled agent treasury wallets with programmatic API security. Private keys are never exposed to LLM prompts.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
               <Zap className="w-5 h-5 text-[#3B66F5] dark:text-[#4D7CFE]" />
               <h3 className="text-base font-bold text-[#0F172A] dark:text-white">USDC Settlement</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Global, real-time dollar settlement with zero currency volatility. Seamless international contractor payouts.
+                Instant digital dollar settlement with zero currency volatility. Seamless wholesale merchant and cross-border haulage payouts.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs">
               <Lock className="w-5 h-5 text-[#F59E0B] dark:text-[#F5B942]" />
-              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">Arc Network</h3>
+              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">Arc L1 &amp; Paymaster</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Sub-second finality, deterministic state confirmation, and fee-sponsored institutional transaction execution.
+                Sub-second finality (&lt;500ms), sub-cent fees (~$0.01 paid in USDC gas), and Paymaster sponsorship so market traders never hold volatile gas tokens.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 17: FINAL CTA */}
+      {/* FINAL CALL TO ACTION */}
       <section className="py-24 px-6 max-w-7xl mx-auto text-center space-y-8">
         <OlowoMascot state="OPERATING" size="lg" className="mx-auto" />
         <h2 className="text-3xl sm:text-5xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-          Let your business operate itself.
+          {language === 'pidgin' ? 'Make OLOWO Face The Money.' : 'Let Your Business Operate Itself.'}
         </h2>
         <p className="text-base text-[#475569] dark:text-[#8896AB] max-w-xl mx-auto">
-          Give OLOWO a mandate. Let it handle the routine.
+          {language === 'pidgin'
+            ? 'Give OLOWO your rules today. E go watch your shop money 24/7 make you fit face your customers.'
+            : 'Give OLOWO a mandate. Let it handle invoices, suppliers, and payments within your rules.'}
         </p>
 
-        <div className="pt-2">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-[#00A878] hover:bg-[#009166] dark:bg-[#35E0B2] dark:hover:bg-[#3ff0c0] text-white dark:text-[#08111F] text-sm font-semibold shadow-md transition-all transform hover:scale-[1.02]"
@@ -558,12 +841,27 @@ export default function LandingPage() {
             <span>Launch OLOWO</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
+          <button
+            onClick={() => {
+              playSound('click');
+              setIsDemoOpen(true);
+            }}
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-xl bg-white dark:bg-[#0D192C] hover:bg-[#F1F5F9] dark:hover:bg-[#12223B] border border-[#E2E8F0] dark:border-[#1A2D4C] text-sm font-semibold text-[#101828] dark:text-white shadow-xs transition-all"
+          >
+            <Play className="w-4 h-4 text-[#00A878] dark:text-[#35E0B2] fill-current" />
+            <span>Interactive Demo</span>
+          </button>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 py-8 px-6 text-center text-xs text-[#64748B] dark:text-[#5E6E85] font-mono">
-        OLOWO • Autonomous Finance. Within your rules. • Built for Hackathon MVP
+      {/* FOOTER */}
+      <footer className="border-t border-[#E2E8F0] dark:border-[#1A2D4C]/60 py-10 px-6 text-center text-xs text-[#64748B] dark:text-[#5E6E85] font-mono space-y-3">
+        <div>
+          OLOWO • Autonomous Finance. Within your rules. • Built for Tameion Agents Hackathon (Canteen × Circle × Arc)
+        </div>
+        <div className="text-[11px] text-[#94A3B8] dark:text-[#475569]">
+          Settled on Arc Network in USDC • RFB 01 to 05 Architecture • Designed for African Market Women &amp; Modern Global SMEs
+        </div>
       </footer>
     </div>
   );
