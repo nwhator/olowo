@@ -30,6 +30,7 @@ import {
   History,
   Scale,
   Award,
+  Layers,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { DemoRunnerModal } from '@/components/demo/DemoRunnerModal';
@@ -793,30 +794,55 @@ export default function LandingPage() {
             <p className="text-xs sm:text-sm text-[#475569] dark:text-[#8896AB] leading-relaxed">
               OLOWO is the intelligent AI operating brain. Circle and Arc provide the institutional stablecoin foundation underneath it.
             </p>
+            <div className="pt-2">
+              <Link
+                href="/infrastructure"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-[#4D7CFE] dark:hover:bg-[#3b6dfd] text-white text-xs font-semibold shadow-sm transition-all"
+              >
+                <span>Open Circle &amp; Arc Infrastructure Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 text-left">
-            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs min-w-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 text-left">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2.5 shadow-xs min-w-0">
               <ShieldCheck className="w-5 h-5 text-[#00A878] dark:text-[#35E0B2]" />
-              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">Circle Wallets</h3>
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Circle Wallets</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Developer-controlled agent treasury wallets with programmatic API security. Private keys are never exposed to LLM prompts.
+                Developer-controlled agent wallets for treasury, protected reserves, and contractor escrows.
               </p>
             </div>
 
-            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs min-w-0">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2.5 shadow-xs min-w-0">
               <Zap className="w-5 h-5 text-[#3B66F5] dark:text-[#4D7CFE]" />
-              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">USDC Settlement</h3>
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Arc USDC Rails</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Instant digital dollar settlement with zero currency volatility. Seamless wholesale merchant and cross-border haulage payouts.
+                Sub-second finality (&lt;380ms) and ~$0.012 USDC gas. Instant supplier settlements.
               </p>
             </div>
 
-            <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-3 shadow-xs min-w-0">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2.5 shadow-xs min-w-0">
               <Lock className="w-5 h-5 text-[#F59E0B] dark:text-[#F5B942]" />
-              <h3 className="text-base font-bold text-[#0F172A] dark:text-white">Arc L1 &amp; Paymaster</h3>
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Circle Paymaster</h3>
               <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
-                Sub-second finality (&lt;500ms), sub-cent fees (~$0.01 paid in USDC gas), and Paymaster sponsorship so market traders never hold volatile gas tokens.
+                100% sponsored gasless transactions. African market traders never hold volatile gas tokens.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2.5 shadow-xs min-w-0">
+              <Sparkles className="w-5 h-5 text-[#10B981] dark:text-[#35E0B2]" />
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Circle USYC Yield</h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                5.15% APY tokenized money market fund. Idle shop rent earns +$0.71 daily interest while locked.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0D192C] border border-[#E2E8F0] dark:border-[#1A2D4C] space-y-2.5 shadow-xs min-w-0">
+              <Layers className="w-5 h-5 text-[#8B5CF6] dark:text-[#A78BFA]" />
+              <h3 className="text-sm font-bold text-[#0F172A] dark:text-white">Circle Gateway</h3>
+              <p className="text-xs text-[#475569] dark:text-[#8896AB] leading-relaxed">
+                Unified multichain USDC balance across Arc, Base, and Arbitrum with CCTP cross-chain bridge.
               </p>
             </div>
           </div>

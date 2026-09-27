@@ -18,6 +18,7 @@ import {
   Sparkles,
   Languages,
   X,
+  Cpu,
 } from 'lucide-react';
 import { OlowoMascot } from '@/components/mascot/OlowoMascot';
 import { MascotState } from '@/types';
@@ -37,7 +38,7 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   highlight?: boolean;
-  badge?: number;
+  badge?: number | string;
   badgeColor?: string;
 }
 
@@ -129,6 +130,19 @@ export function AppSidebar({
       ],
     },
     {
+      title: isPidgin ? 'CIRCLE & ARC RAILS' : 'HACKATHON INFRASTRUCTURE',
+      items: [
+        {
+          label: isPidgin ? 'Circle & Arc Engine' : 'Circle & Arc Rails',
+          href: '/infrastructure',
+          icon: Cpu,
+          badge: 'ACTIVE',
+          badgeColor:
+            'bg-[#00A878]/10 text-[#00A878] dark:bg-[#35E0B2]/10 dark:text-[#35E0B2] border-[#00A878]/30',
+        },
+      ],
+    },
+    {
       title: isPidgin ? 'SYSTEM' : 'SYSTEM',
       items: [
         {
@@ -213,13 +227,14 @@ export function AppSidebar({
                       <span>{item.label}</span>
                     </div>
 
-                    {item.badge !== undefined && item.badge > 0 && (
-                      <span
-                        className={`px-1.5 py-0.5 text-[10px] font-mono font-semibold rounded-full border ${item.badgeColor || 'bg-slate-100 text-slate-700'}`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
+                    {item.badge !== undefined &&
+                      (typeof item.badge === 'string' || item.badge > 0) && (
+                        <span
+                          className={`px-1.5 py-0.5 text-[10px] font-mono font-semibold rounded-full border ${item.badgeColor || 'bg-slate-100 text-slate-700'}`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
                   </Link>
                 );
               })}
